@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" type="text/css" href="css/pop.css">
+	<script type="text/javascript" src="js/api.js"></script>
+</head>
+<body>
+	<a href="#" id="icon-template" class="icon">
+		<div class="icon-content">
+			<span class="icon-name"></span>
+			<br />
+			<button style="display: none;"></button>
+		</div>
+	</a>
+	<div id="link-list">
+		<a href="#" id="status-link" class="link">Google Apps Status</a><br />
+		<a href="#" id="option-link" class="link">Option Page</a>
+	</div>
+	<script type="text/javascript">
+		function $id(id){
+			return document.getElementById(id);
+		}
+		
+		function CreateIcon(id_, name_, icon_){
+			
+			var parent = document.body;
+			
+			CreateIcon = function(id, name, icon){
+			};
+			
+			return CreateIcon(id_, name_, icon_);
+		}
+		
+		api.GetAllServiceInfo(function(allServiceInfo){
+			var template = $id('icon-template');
+			
+			allServiceInfo.forEach(function(service){
+				if(!service.enabled)
+					return;
+				
+				var icon = template.cloneNode(true);
+				icon.id = service.id + '-icon';
+				icon.addEventListener('click', function(e){
+					api.OpenService(service.id);
+					e.stopPropagation();
+				}, false);
+				var div = icon.getElementsByTagName('div')[0];
+				div.style.backgroundImage = 'url(' + service.icon + ')';
+				var span = div.getElementsByTagName('span')[0];
+				span.textContent = service.name;
+				var btn = icon.getElementsByTagName('button')[0];
+				switch(service.id){
+					case 'gmail':
+						btn.id = 'gmail-badge';
+						break;
+					case 'reader':
+						btn.id = 'reader-badge';
+						break;
+					case 'appengine':
+						btn.textContent = 'Status';
+						btn.addEventListener('click', function(e){
+							api.CreateTab("code.google.com/status/appengine");
+							e.stopPropagation();
+						}, false);
+						break;
+				}
+				
+				document.body.appendChild(icon);
+			});
+			
+			document.body.appendChild($id("link-list"));
+			document.body.appendChild(document.createElement('br'));
+		});
+		
+		$id("status-link").addEventListener('click', function(e){
+			api.CreateTab("http://www.google.com/appsstatus");
+			e.stopPropagation();
+		});
+		
+		$id("option-link").addEventListener('click', function(e){
+			api.CreateTab(chrome.extension.getURL("opt.html"));
+			e.stopPropagation();
+		});
+		
+		api.GetBadge(function(value){
+			var gmailBadge = $id('gmail-badge');
+			var readerBadge = $id('reader-badge');
+			
+			if(gmailBadge){
+				if(value.gmail){
+					gmailBadge.style.display = "block";
+					gmailBadge.textContent = value.gmail;
+				}else{
+					gmailBadge.style.display = "none";
+				}
+			}
+			
+			if(readerBadge){
+				if(value.reader){
+					readerBadge.style.display = "block";
+					readerBadge.textContent = value.reader;
+				}else{
+					readerBadge.style.display = "none";
+				}
+			}
+		});
+	</script>
+</body>
+</html>
