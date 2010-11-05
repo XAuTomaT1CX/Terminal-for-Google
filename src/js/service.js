@@ -395,6 +395,12 @@ var ServiceList = [
 		name: 'Dashboard',
 		url: 'https://www.google.com/dashboard/',
 		icon: 'icons/google.png'
+	}),
+	new Service({
+		id: 'accounts',
+		name: 'Accounts',
+		url: 'https://www.google.com/accounts/',
+		icon: 'icons/google.png'
 	})
 ];
 
