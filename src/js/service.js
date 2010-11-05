@@ -389,6 +389,12 @@ var ServiceList = [
 		name: 'YouTube',
 		url: 'www.youtube.com',
 		icon: 'icons/youtube.png'
+	}),
+	new Service({
+		id: 'dashboard',
+		name: 'Dashboard',
+		url: 'https://www.google.com/dashboard/',
+		icon: 'icons/google.png'
 	})
 ];
 
