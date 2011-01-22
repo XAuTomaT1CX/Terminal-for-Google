@@ -1,1 +1,122 @@
-<!DOCTYPE HTML><html lang="ja"><head>	<meta charset="UTF-8">	<title>Google Terminal Options</title>	<link rel="stylesheet" type="text/css" href="css/opt.css" media="all">	<script type="text/javascript" src="js/api.js"></script></head><body>	<header>		<img src="icons/google.png" width="64" height="64" />		<h1>Options</h1>	</header>		<section>	<a id="policy" href="#policy">Policy</a>	<div>		<label for="secure-box">			<input type="checkbox" name="secure-box" id="secure-box" />			<span>Use HTTPS</span>		</label>	</div>	</section>		<section>	<a id="service" href="#service">Service</a>	<div>		<ul id="service-list">			<li id="service-template">				<label for="">					<input type="checkbox" name="" id="" />					<img src="icons/google.png" width="64" height="64" class="service-icon" alt="">					<span></span>				</label>			</li>		</ul>	</div>	</section>		<section>	<a id="about" href="#about">About</a>	<div>		<p>			Google Terminal is created by			<a href="http://twitter.com/chick307" target="_blank">@chick307</a>.		</p>		<br />		<p>			<em>Tasks</em> Icon by 			<a href="http://www.dezinerfolio.com/2008/08/28/on-stage-free-vector-psd-icon-set" target="_blank">				Dezinerfolio</a>.		</p>		<p>			The Other Icons by 			<a href="http://www.iconspedia.com/pack/simply-google-1-37/" target="_blank">				Tempest</a>.		</p>	</div>	</section>		<script type="text/javascript">		if(!location.hash)			location.hash = "#policy";				api.GetPref(function(pref){			var secureBox = document.getElementById("secure-box");						secureBox.checked = pref.secure;			secureBox.addEventListener("change", function(){				api.SetPref({secure: this.checked});			}, false);		});				api.GetAllServiceInfo(function(allServiceInfo){			var ul = document.getElementById("service-list");			var template = document.getElementById("service-template");			allServiceInfo.forEach(function(service){				var li = template.cloneNode(true);				var label = li.getElementsByTagName('label')[0];				var box = label.getElementsByTagName('input')[0];				var icon = label.getElementsByTagName('img')[0];				var span = label.getElementsByTagName('span')[0];								li.id = service.id + '-item';				li.className = service.enabled? 'service-enabled': '';				label.setAttribute('for', box.id = service.id + "-checkbox");				box.checked = service.enabled;				box.addEventListener("change", function(){					api.SetPref(service.id + '-enabled', this.checked);					li.className = this.checked? 'service-enabled': '';				}, false);				icon.src = service.icon;				span.textContent = service.name;				ul.appendChild(li);			});		});	</script></body></html>
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Google Terminal Options</title>
+	<link rel="stylesheet" type="text/css" href="css/opt.css" media="all">
+	<script type="text/javascript" src="js/pref.js"></script>
+</head>
+<body>
+	<header>
+		<img src="icons/google.png" width="64" height="64" />
+		<h1>Options</h1>
+	</header>
+	
+	<section>
+	<a id="policy" href="#policy">Policy</a>
+	<div>
+		<label for="secure-box">
+			<input type="checkbox" name="secure-box" id="secure-box" />
+			<span>Use HTTPS</span>
+		</label>
+	</div>
+	</section>
+	
+	<section>
+	<a id="service" href="#service">Service</a>
+	<div>
+		<ul id="service-list">
+			<li id="service-template">
+				<label for="">
+					<input type="checkbox" name="" id="" />
+					<img src="icons/google.png" width="64" height="64" class="service-icon" alt="">
+					<span></span>
+				</label>
+			</li>
+		</ul>
+	</div>
+	</section>
+	
+	<section>
+	<a id="about" href="#about">About</a>
+	<div>
+		<p>
+			Google Terminal is created by
+			<a href="http://twitter.com/chick307" target="_blank">@chick307</a>.
+		</p>
+		<br />
+		<p>
+			<em>Tasks</em> Icon by 
+			<a href="http://www.dezinerfolio.com/2008/08/28/on-stage-free-vector-psd-icon-set" target="_blank">
+				Dezinerfolio</a>.
+		</p>
+		<p>
+			The Other Icons by 
+			<a href="http://www.iconspedia.com/pack/simply-google-1-37/" target="_blank">
+				Tempest</a>.
+		</p>
+	</div>
+	</section>
+	
+	<script type="text/javascript">
+		var backgroundPage = chrome.extension.getBackgroundPage();
+		var pref = backgroundPage.pref,
+			services = backgroundPage.services;
+		
+		
+		if(!location.hash){
+			history.replaceState('', '', 'opt.html#policy');
+		}
+		
+		
+		var secureBox = document.getElementById("secure-box");
+		secureBox.checked = pref.get('secure', true);
+		secureBox.addEventListener("change", function(){
+			pref.set('secure', this.checked);
+		}, false);
+		
+		
+		var ul = document.getElementById("service-list");
+		var template = document.getElementById("service-template");
+		var clone = function(){
+			var node = template.cloneNode(true);
+			return {
+				node: node,
+				label: node.querySelector('label'),
+				box: node.querySelector('input'),
+				icon: node.querySelector('img'),
+				name: node.querySelector('span')
+			};
+		};
+		
+		services.forEach(function(service){
+			var nodes = clone(),
+				id = service.id,
+				enabled = service.isEnabled;
+			
+			nodes.node.id = id + '-item';
+			if(enabled){
+				nodes.node.classList.add('service-enabled');
+			}
+			
+			nodes.label.setAttribute('for', nodes.box.id = id + "-checkbox");
+			
+			nodes.box.checked = enabled;
+			nodes.box.addEventListener("change", function(){
+				if(this.checked){
+					service.enable();
+					nodes.node.classList.add('service-enabled');
+				}else{
+					service.disable();
+					nodes.node.classList.remove('service-enabled');
+				}
+			}, false);
+			
+			nodes.icon.src = service.icon;
+			nodes.name.textContent = service.name;
+			
+			ul.appendChild(nodes.node);
+		});
+	</script>
+</body>
+</html>

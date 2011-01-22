@@ -1,15 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<script type="text/javascript" src="js/badge.js"></script>
-	<script type="text/javascript" src="js/contextmenu.js"></script>
-	<script type="text/javascript" src="js/schedule.js"></script>
-	<script type="text/javascript" src="js/http-request.js"></script>
-	<script type="text/javascript" src="js/service.js"></script>
-	<script type="text/javascript" src="js/preference.js"></script>
-	<script type="text/javascript" src="js/back.js"></script>
-	<script type="text/javascript" src="js/api.js"></script>
+
+<meta charset="utf-8"/>
+<script src="js/http-request.js"></script>
+
+<script src="js/pref.js"></script>
+<script>
+	var pref = new Preference({prefix: 'pref-'});
+	
+	var badge = {
+		_gmail: null,
+		_reader: null,
+		refresh: function(){
+			var color = null, text;
+			
+			if(this._gmail){
+				if(this._reader){
+					color = [208, 24, 232, 255];
+					text = "!";
+				}else{
+					color = [208, 0, 24, 255];
+					text = this._gmail;
+				}
+			}else if(this._reader){
+				color = [0, 24, 208, 255];
+				text = this._reader;
+			}else{
+				text = "";
+			}
+			
+			if(color){
+				chrome.browserAction.setBadgeBackgroundColor({color: color});
+			}
+			
+			chrome.browserAction.setBadgeText({text: text});
+		},
+		get gmail(){
+			return this._gmail;
+		},
+		set gmail(value){
+			if(value == 0 || value == null){
+				this._gmail = null;
+			}else{
+				this._gmail = String(value);
+			}
+			
+			this.refresh();
+		},
+		get reader(){
+			return this._reader;
+		},
+		set reader(value){
+			if(value == 0 || value == null){
+				this._reader = null;
+			}else{
+				this._reader = String(value);
+			}
+			
+			this.refresh();
+		}
+	};
+	
+	// 古い設定の引き継ぎ
+	localStorage.pref && (function(str){
+		try{
+			var json = JSON.parse(str);
+			
+			if(json.secure !== void 0){
+				pref.setDefault('secure', json.secure);
+			}
+			
+			services.forEach(function(service){
+				var key = service.id + '-enabled';
+				if(json[key] != void 0){
+					pref.setDefault(key, json[key]);
+				}
+			});
+		}catch(e){
+			console.error(e);
+		}
+		
+		localStorage.removeItem('pref');
+	})(localStorage.pref);
+</script>
+
+<script src="js/service.js"></script>
+
 </head>
 <body></body>
 </html>

@@ -1,16 +1,10 @@
 
-html {
-	background-color: #FFF;
-}
-
-body {
-	width: 408px;
-}
-
 html, body {
 	margin: 0;
 	padding: 0;
 	border: 0;
+	width: 408px;
+	background-color: #FFF;
 	-webkit-user-select: none;
 }
 
@@ -55,11 +49,11 @@ a {
 }
 
 .icon-content button{
+	display: block;
 	width: 80px;
 	margin: 0 2px 0 0;
 	font-size: 10px;
 	padding: 0 10px;
-	background-color: rgb(208, 0, 24);
 	border: 0;
 	border-radius: 3px;
 	color: #FFF;
@@ -67,6 +61,14 @@ a {
 	line-height: 14px;
 	float: right;
 }
+
+.icon-content button:empty {
+	display: none;
+}
+
+#gmail-badge { background-color: rgb(208, 0, 24); }
+#reader-badge { background-color: #00A; }
+#appengine-badge { background-color: #468; }
 
 #link-list{
 	width: 130px;
@@ -83,15 +85,6 @@ a {
 	clear: both;
 }
 
-.link{
+#link-list > a{
 	color: #444;
-}
-
-#reader-icon button{
-	background-color: #00A !important;
-}
-
-#appengine-icon button {
-	display: block !important;
-	background-color: #468 !important;
 }
