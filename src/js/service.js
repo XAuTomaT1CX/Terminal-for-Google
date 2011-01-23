@@ -100,6 +100,7 @@ function Gmail(){
 		"mail.google.com/mail/feed/atom";
 	
 	// XMLネームスペース
+	var path = '/gmail:feed/gmail:fullcount';
 	var ns = function(prefix){
 		if(prefix == 'gmail'){
 			return 'http://purl.org/atom/ns#';
@@ -107,28 +108,21 @@ function Gmail(){
 	};
 	
 	var checkUnreadCount = function(){
-		// TODO
-		new HttpRequest({
+		httpRequest({
 			url: feed,
-			onSuccess: function(args){
-				var fullCountNode = args.xml.evaluate(
-					"/gmail:feed/gmail:fullcount", args.xml, ns,
-					XPathResult.ANY_TYPE, null
-				).iterateNext();
+			responseType: 'xml',
+			onSuccess: function(xml, xhr){
+				var node = xml.evaluate(path, xml, ns, XPathResult.ANY_TYPE, null).iterateNext();
 				
-				if(fullCountNode){
-					if(fullCountNode.textContent == '0'){
-						badge.gmail = null;
-					}else{
-						badge.gmail = fullCountNode.textContent;
-					}
+				if(node){
+					badge.gmail = node.textContent;
 				}else{
-					console.error('Gmail XML Error', args);
+					console.error('Gmail XML Error', xml);
 				}
 			},
 			onError: function(e){
-				badge.gmail = null;
-				console.error('Gmail Error :', e);
+				badge.gmail = 0;
+				console.error('Gmail', e);
 			}
 		});
 	}.bind(this);
@@ -186,20 +180,15 @@ function GoogleReader(){
 		"www.google.com/reader/api/0/unread-count?output=json";
 	
 	var checkUnreadCount = function(){
-		// TODO
-		new HttpRequest({
+		httpRequest({
 			url: json,
-			onSuccess: function(args){
-				if(args.status != 200){
-					console.error('Status Code Error "' + args.status + '"');
-					return;
-				}
+			responseType: 'json',
+			onSuccess: function(json, xhr){
+				var links = json.unreadcounts, value = 0, i;
 				
-				var linkList = args.json.unreadcounts, value = null;
-				
-				for(var i in linkList){
-					if(linkList[i].id.indexOf("reading-list") >= 0){
-						value = linkList[i].count.toString();
+				for(i in links){
+					if(links[i].id.indexOf("reading-list") >= 0){
+						value = links[i].count.toString();
 						break;
 					}
 				}
@@ -207,8 +196,8 @@ function GoogleReader(){
 				badge.reader = value;
 			},
 			onError: function(e){
-				badge.reader = null;
-				console.error('Google Reader Error :', e);
+				badge.reader = 0;
+				console.error('Google Reader', e);
 			}
 		});
 	}.bind(this);

@@ -1,60 +1,59 @@
 
-function HttpRequest(args){
-	var self = this;
-	self.url = args.url;
-	self.method = args.method || 'GET';
-	self.onSuccess = args.onSuccess;
-	self.onError = args.onError;
-	self.requestTimeout = args.requestTimeout || 1000 * 10;
-	
-	var xhr = new XMLHttpRequest();
-	var timeout;
-	
-	var handleSuccess = function(result){
-		if(timeout){
-			window.clearTimeout(timeout);
-			timeout = null;
-		}
-		
-		if(self.onSuccess)
-			self.onSuccess.call(self, result);
-	}
+function httpRequest(args){
+	var url = args.url,
+		method = args.method || 'GET',
+		requestTimeout = args.requestTimeout || 1000 * 60,
+		responseType = args.responseType || 'text',
+		onSuccess = args.onSuccess,
+		onError = args.onError;
 	
 	var handleError = function(e){
 		if(timeout){
-			window.clearTimeout(timeout);
-			timeout = null;
+			clearTimeout(timeout);
 		}
 		
-		if(self.onError)
-			self.onError.call(self, e);
+		if(onError){
+			onError(e);
+		}else{
+			console.error(e)
+		}
 	};
 	
-	timeout = window.setTimeout(function(){
+	var xhr = new XMLHttpRequest();
+	
+	var timeout = setTimeout(function(){
 		timeout = null;
 		xhr.abort();
-		handleError('request time out');
-	}, self.requestTimeout);
+		handleError('Request Timeout (' + method + ' ' + url + ')');
+	}, requestTimeout);
 	
-	try{
-		xhr.onreadystatechange = function(){
-			if(xhr.readyState == 4){
-				try{
-					handleSuccess({
-						get status(){ return xhr.status; },
-						get text(){ return xhr.responseText; },
-						get json(){ return JSON.parse(xhr.responseText); },
-						get xml(){ return xhr.responseXML; }
-					});
-				}catch(e){
-					handleError(e);
+	xhr.onerror = handleError;
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4 && xhr.status == 200){
+			try{
+				var response = null;
+				
+				if(responseType === 'json'){
+					response = JSON.parse(xhr.responseText);
+				}else if(responseType === 'xml'){
+					response = xhr.responseXML;
+				}else if(responseType === 'text'){
+					response = xhr.responseText;
 				}
+				
+				if(timeout){
+					clearTimeout(timeout);
+				}
+				
+				if(onSuccess){
+					onSuccess(response, xhr);
+				}
+			}catch(e){
+				handleError(e);
 			}
-		};
-		xhr.onerror = function(e){ handleError(e); };
-		xhr.open(this.method, this.url, true);
-		xhr.send(null);
-	}catch(e){
-		handleError(e);
-	}
+		}
+	};
+	
+	xhr.open(method, url, true);
+	xhr.send(null);
 }
