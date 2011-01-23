@@ -5,24 +5,28 @@ html, body {
 	width: 100%;
 	height: 100%;
 	-webkit-user-select: none;
-	-webkit-box-sizing: border-box;
 }
 
 body {
-	padding-top: 75px;
-	background-color: #EEE;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	color: #666;
+	background-attachment: fixed;
 	background-image: -webkit-gradient(
 		linear, left top, right top, from(#EEE), to(#CCC));
-	color: #666;
+	background-repeat: no-repeat;
 }
+
+a {
+	text-decoration: none;
+}
+
 
 header {
 	display: block;
-	float: left;
-	position: relative;
-	top: -75px;
-	height: 75px;
-	vertical-align: bottom;
+	height: 74px;
+	width: 100%;
+	border-bottom: 1px solid #888;
 }
 
 header > img {
@@ -33,63 +37,66 @@ header > img {
 }
 
 header > h1 {
-	display: inline;
-	margin: 0 15px 0 0;
-	line-height: 64px;
-	text-shadow: 2px 2px 1px #FFF;
+	display: inline-block;
+	margin: 0 0.6em;
+	line-height: 74px;
+	height: 74px;
+	text-shadow: 1px 1px 0 #FFF;
 	vertical-align: middle;
 }
 
-section {
-	float: left;
-	vertical-align: bottom;
+header > ul {
+	display: inline-block;
+	margin: 50px 0 0;
+	padding: 0;
+	height: 24px;
+	vertical-align: middle;
 }
 
-section > a {
+header > ul > li {
 	position: relative;
-	top: -25px;
-	margin: 0 0.3em;
+	display: inline-block;
+	margin: 0 0 0 0.3em;
 	padding: 0 1em;
 	border: 1px solid #888;
 	border-bottom: 0;
 	-webkit-box-sizing: border-box;
-	-webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.2);
-	height: 25px;
-	line-height: 25px;
+	height: 24px;
+	background-color: #FFF;
+	text-shadow: 1px 1px 0 #FFF;
+	z-index: 2;
+}
+
+header > ul > li.target {
+	top: 1px;
+	background-color: #F8F8F8;
+}
+
+header > ul > li > a {
+	line-height: 24px;
 	color: #666;
 	text-decoration: none;
-	background-color: #FFF;
-	float: left;
-	z-index: 25;
 }
 
-section > a:target {
-	top: -24px;
-	z-index: 100;
-}
 
-section > a + div {
+section {
 	display: none;
+	-webkit-box-flex: 1;
 	margin: 0;
-	padding: 0.5em 1em;
-	border-top: 1px solid #888;
-	position: absolute;
-	left: 0;
-	top: 75px;
-	right: 0;
-	bottom: 0;
-	background-color: #FFF;
-	background-image: -webkit-gradient(linear, left top, left bottom,
-		from(#FFF), to(#CCC));
-	-webkit-box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+	padding: 10px;
+	width: 100%;
+	height: 100%;
+	background-color: #F8F8F8;
+	-webkit-box-sizing: border-box;
 	font-size: 14pt;
-	line-height: 150%;
-	z-index: 50;
+	overflow-y: scroll;
+	z-index: 1;
 }
 
-section > a:target + div {
+section:target {
 	display: block;
 }
+
 
 table {
 	border: 0;
@@ -103,48 +110,64 @@ input {
 	font-size: 14pt;
 }
 
-#service-list {
+#enabled-service-list, #disabled-service-list {
 	display: block;
+	margin: 20px auto;
 	padding: 0;
+	border: 1px solid #CCC;
+	border-radius: 5px;
+	width: 408px;
+	min-height: 38px;
 }
 
-#service-list > li {
-	display: inline-block;
-	width: 200px;
-	height: 80px;
-	margin: 4px;
-	padding: 0;
-	border-radius: 10px;
-	-webkit-box-sizing: border-box;
-	font-size: 14px;
-}
-
-#service-list > li.service-enabled {
-	background-color: #CFA;
-	-webkit-box-shadow: 1px 1px rgba(0, 0, 0, 0.2);
-}
-
-#service-list > li#service-template {
+#service-item-template {
 	display: none;
 }
 
-#service-list label {
+.service-item {
+	display: -webkit-inline-box;
+	-webkit-box-align: center;
+	position: relative;
+	margin: 1px;
+	padding: 1px;
+	border: 1px solid #BBB;
+	border-radius: 5px;
+	width: 130px;
+	height: 34px;
+	color: #000;
+	background-color: #F0F0F0;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
+		from(#FFF), to(#DDD));
+	text-shadow: 1px 1px 0 #FFF;
+	-webkit-user-drag: element;
+	cursor: move;
+	vertical-align: top;
+}
+
+.service-item:nth-of-type(3n):last-child {
+	margin-bottom: 39px;
+}
+
+.service-item img {
 	display: block;
+	width: 32px;
+	height: 32px;
+	margin: 1px 3px;
 }
 
-#service-list img {
-	margin: 10px 5px;
-	vertical-align: middle;
-}
-
-#service-list span {
-	display: inline-block;
-	vertical-align: middle;
-	width: 80px;
+.service-item span {
+	display: block;
+	-webkit-box-flex: 1;
+	line-height: 16px;
 	text-align: center;
+	font-size: 12px;
+	min-height: 16px;
+	padding: 0 1em;
+	margin: 1px 0;
 }
 
-#service-list input {
-	vertical-align: middle;
+h2 {
+	text-align: center;
+	font-size: 14px;
+	line-height: 1.0;
 }
-

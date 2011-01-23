@@ -145,29 +145,21 @@ function Gmail(){
 		checkUnreadCount();
 		
 		// 未読チェックを開始
-		polling = setInterval(function(){
-			checkUnreadCount();
-		}, pollInterval);
+		polling = setInterval(checkUnreadCount, pollInterval);
 		
 		// タブを監視する
-		if(!chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.addListener(onTabUpdated);
-		}
+		chrome.tabs.onUpdated.addListener(onTabUpdated);
 	});
 	
 	this.onDisabled.push(function(){
 		badge.gmail = null;
 		
 		// 未読チェックを終了
-		if(polling){
-			clearInterval(polling);
-			polling = null;
-		}
+		clearInterval(polling);
+		polling = null;
 		
 		// タブの監視を外す
-		if(chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.removeListener(onTabUpdated)
-		}
+		chrome.tabs.onUpdated.removeListener(onTabUpdated);
 	});
 }
 

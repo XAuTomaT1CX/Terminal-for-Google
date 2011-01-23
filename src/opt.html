@@ -10,36 +10,28 @@
 	<header>
 		<img src="icons/google.png" width="64" height="64" />
 		<h1>Options</h1>
+		<ul>
+			<li><a href="#policy">Policy</a></li>
+			<li><a href="#service">Service</a></li>
+			<li><a href="#about">About</a></li>
+		</ul>
 	</header>
 	
-	<section>
-	<a id="policy" href="#policy">Policy</a>
-	<div>
+	<section id="policy">
 		<label for="secure-box">
 			<input type="checkbox" name="secure-box" id="secure-box" />
 			<span>Use HTTPS</span>
 		</label>
-	</div>
 	</section>
 	
-	<section>
-	<a id="service" href="#service">Service</a>
-	<div>
-		<ul id="service-list">
-			<li id="service-template">
-				<label for="">
-					<input type="checkbox" name="" id="" />
-					<img src="icons/google.png" width="64" height="64" class="service-icon" alt="">
-					<span></span>
-				</label>
-			</li>
-		</ul>
-	</div>
+	<section id="service">
+		<h2>Enabled Services</h2>
+		<ul id="enabled-service-list"></ul>
+		<h2>Disabled Services</h2>
+		<ul id="disabled-service-list"></ul>
 	</section>
 	
-	<section>
-	<a id="about" href="#about">About</a>
-	<div>
+	<section id="about">
 		<p>
 			Google Terminal is created by
 			<a href="http://twitter.com/chick307" target="_blank">@chick307</a>.
@@ -55,7 +47,6 @@
 			<a href="http://www.iconspedia.com/pack/simply-google-1-37/" target="_blank">
 				Tempest</a>.
 		</p>
-	</div>
 	</section>
 	
 	<script type="text/javascript">
@@ -63,12 +54,25 @@
 		var pref = backgroundPage.pref,
 			services = backgroundPage.services;
 		
+		// ページを開いたとき、ページ内リンクで移動したとき
+		window.addEventListener('popstate', function(){
+			var e;
+			
+			if(e = document.querySelector('li.target')){
+				e.classList.remove('target');
+			}
+			
+			if(e = document.querySelector('a[href$=\\' + location.hash + ']')){
+				e.parentNode.classList.add('target');
+			}
+		}, false);
 		
 		if(!location.hash){
 			history.replaceState('', '', 'opt.html#policy');
 		}
 		
 		
+		// HTTPSにするかどうかの設定項目
 		var secureBox = document.getElementById("secure-box");
 		secureBox.checked = pref.get('secure', true);
 		secureBox.addEventListener("change", function(){
@@ -76,47 +80,166 @@
 		}, false);
 		
 		
-		var ul = document.getElementById("service-list");
-		var template = document.getElementById("service-template");
-		var clone = function(){
-			var node = template.cloneNode(true);
-			return {
-				node: node,
-				label: node.querySelector('label'),
-				box: node.querySelector('input'),
-				icon: node.querySelector('img'),
-				name: node.querySelector('span')
-			};
-		};
-		
-		services.forEach(function(service){
-			var nodes = clone(),
-				id = service.id,
-				enabled = service.isEnabled;
-			
-			nodes.node.id = id + '-item';
-			if(enabled){
-				nodes.node.classList.add('service-enabled');
-			}
-			
-			nodes.label.setAttribute('for', nodes.box.id = id + "-checkbox");
-			
-			nodes.box.checked = enabled;
-			nodes.box.addEventListener("change", function(){
-				if(this.checked){
-					service.enable();
-					nodes.node.classList.add('service-enabled');
-				}else{
-					service.disable();
-					nodes.node.classList.remove('service-enabled');
-				}
+		// サービスのアイコンを作成
+		var createIcon = function(service){
+			var node = document.createElement('a');
+			node.id = service.id;
+			node.classList.add('service-item');
+			node.href = '#';
+			node.addEventListener('click', function(e){
+				service.open();
+			}, false);
+			node.addEventListener('dragstart', function(e){
+				e.dataTransfer.setData('Text', service.id);
 			}, false);
 			
-			nodes.icon.src = service.icon;
-			nodes.name.textContent = service.name;
+			var icon = document.createElement('img');
+			icon.src = service.icon;
+			node.appendChild(icon);
 			
-			ul.appendChild(nodes.node);
+			var caption = document.createElement('span');
+			caption.textContent = service.name;
+			node.appendChild(caption);
+			
+			return node;
+		};
+		
+		
+		var enabledServices = {},
+			disabledServices = {},
+			services = {};
+		var serviceIds = backgroundPage.services.map(function(service){
+			services[service.id] = service;
+			return service.id;
 		});
+		
+		
+		var preventDefault = function(e){ e.preventDefault(); };
+		
+		var enabledServiceList = document.getElementById("enabled-service-list");
+		
+		enabledServiceList.addEventListener('dragover', preventDefault, false);
+		enabledServiceList.addEventListener('dragenter', preventDefault, false);
+		enabledServiceList.addEventListener('drop', function(e){
+			e.preventDefault();
+			
+			var id = event.dataTransfer.getData('Text');
+			var node = document.getElementById(id);
+			
+			var target = e.target;
+			while(!target.classList.contains('service-item') && target !== this){
+				target = target.parentNode;
+			}
+			
+			if(target === node){
+				return;
+			}else if(target === this){
+				this.appendChild(node);
+			}else if(node.parentNode === this){
+				var children = Array.prototype.slice.call(this.children);
+				if(children.indexOf(node) < children.indexOf(target)){
+					if(target.nextSibling){
+						this.insertBefore(node, target.nextSibling);
+					}else{
+						this.appendChild(node);
+					}
+				}else{
+					this.insertBefore(node, target);
+				}
+			}else{
+				this.insertBefore(node, target);
+			}
+			
+			// Disabled Servicesからドラッグしてきた場合
+			if(id in disabledServices){
+				enabledServices[id] = disabledServices[id];
+				delete disabledServices[id];
+				enabledServices[id].enable();
+			}
+			
+			saveServiceOrder();
+		}, false);
+		
+		var disabledServiceList = document.getElementById("disabled-service-list");
+		
+		disabledServiceList.addEventListener('dragover', preventDefault, false);
+		disabledServiceList.addEventListener('dragenter', preventDefault, false);
+		disabledServiceList.addEventListener('drop', function(e){
+			e.preventDefault();
+			
+			var id = event.dataTransfer.getData('Text');
+			var node = document.getElementById(id);
+			
+			var target = e.target;
+			while(!target.classList.contains('service-item') && target !== this){
+				target = target.parentNode;
+			}
+			
+			if(target === node){
+				return;
+			}else if(target === this){
+				this.appendChild(node);
+			}else if(node.parentNode === this){
+				var children = Array.prototype.slice.call(this.children);
+				if(children.indexOf(node) < children.indexOf(target)){
+					if(target.nextSibling){
+						this.insertBefore(node, target.nextSibling);
+					}else{
+						this.appendChild(node);
+					}
+				}else{
+					this.insertBefore(node, target);
+				}
+			}else{
+				this.insertBefore(node, target);
+			}
+			
+			// Enabled Servicesからドラッグしてきた場合
+			if(id in enabledServices){
+				disabledServices[id] = enabledServices[id];
+				delete enabledServices[id];
+				disabledServices[id].disable();
+			}
+			
+			saveServiceOrder();
+		}, false);
+		
+		// 順番にしたがってサービスのアイコンを作成
+		pref.get('service-order', []).forEach(function(id){
+			var service = services[id];
+			if(service.isEnabled){
+				enabledServices[id] = service;
+				serviceIds.pop(serviceIds.indexOf(id));
+				enabledServiceList.appendChild(createIcon(service));
+			}else{
+				disabledServices[id] = service;
+				serviceIds.pop(serviceIds.indexOf(id));
+				disabledServiceList.appendChild(createIcon(service));
+			}
+		});
+		
+		serviceIds.forEach(function(id){
+			var service = services[id];
+			if(service.isEnabled){
+				enabledServices[id] = service;
+				enabledServiceList.appendChild(createIcon(service));
+			}else if(id in disabledServices){
+				disabledServices[id] = service;
+				disabledServiceList.appendChild(createIcon(service));
+			}
+		});
+		
+		// サービスの順番を保存する
+		function saveServiceOrder(){
+			var e = Array.prototype.slice.call(enabledServiceList.children),
+				d = Array.prototype.slice.call(disabledServiceList.children);
+			var children = e.concat(d);
+			var order = children.map(function(child){
+				return child.id;
+			});
+			
+			pref.set('service-order', order);
+		}
 	</script>
 </body>
 </html>

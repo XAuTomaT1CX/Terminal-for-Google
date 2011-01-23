@@ -5,13 +5,6 @@
 	<link rel="stylesheet" type="text/css" href="css/pop.css">
 </head>
 <body>
-	<a href="#" id="icon-template" class="icon">
-		<div class="icon-content">
-			<span class="icon-name"></span>
-			<br />
-			<button></button>
-		</div>
-	</a>
 	<div id="link-list">
 		<a href="#" id="status-link" class="link">Google Apps Status</a><br />
 		<a href="#" id="option-link" class="link">Option Page</a>
@@ -29,35 +22,57 @@
 			return node;
 		}
 		
-		var template = $id('icon-template');
-		var clone = function(){
-			var node = template.cloneNode(true);
-			return {
-				node: node,
-				content: node.querySelector('div'),
-				name: node.querySelector('span'),
-				badge: node.querySelector('button')
-			};
+		var linkList = $id("link-list");
+		
+		// サービスのアイコンを作成してbodyに追加
+		var createIcon = function(service){
+			var node = document.createElement('a');
+			node.classList.add('icon');
+			node.href = '#';
+			node.addEventListener('click', function(e){
+				service.open();
+			}, false);
+			
+			var icon = document.createElement('img');
+			icon.src = service.icon;
+			node.appendChild(icon);
+			
+			var caption = document.createElement('span');
+			caption.textContent = service.name;
+			node.appendChild(caption);
+			
+			var badge = document.createElement('button');
+			badge.id =  service.id + '-badge';
+			node.appendChild(badge);
+			
+			document.body.insertBefore(node, linkList);
+			return node;
 		};
 		
-		backgroundPage.services.forEach(function(service){
-			if(service.isEnabled){
-				var icon = clone();
-				
-				icon.node.id = service.id + '-icon';
-				icon.node.addEventListener('click', function(e){
-					service.open();
-				}, false);
-				icon.content.style.backgroundImage = 'url(' + service.icon + ')';
-				icon.name.textContent = service.name;
-				icon.badge.id = service.id + '-badge';
-				document.body.appendChild(icon.node);
+		var services = {};
+		var serviceIds = backgroundPage.services.filter(function(service){
+			return service.isEnabled;
+		}).map(function(service){
+			services[service.id] = service;
+			return service.id;
+		});
+		
+		// 順番にしたがってサービスのアイコンを作成
+		pref.get('service-order', []).forEach(function(id){
+			var service;
+			if(id in services){
+				service = services[id];
+				createIcon(service);
+				serviceIds.pop(serviceIds.indexOf(id));
 			}
 		});
 		
-		document.body.appendChild($id("link-list"));
-		document.body.appendChild(document.createElement('br'));
+		serviceIds.forEach(function(id){
+			var service = services[id];
+			createIcon(service);
+		});
 		
+		// リンクの動作を設定
 		$id("status-link").addEventListener('click', function(e){
 			chrome.tabs.create({
 				url: "http://www.google.com/appsstatus",
@@ -72,6 +87,7 @@
 			});
 		});
 		
+		// バッジの内容を入れる
 		$id('gmail-badge', function(gmailBadge){
 			gmailBadge.textContent = badge.gmail || '';
 		});

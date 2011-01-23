@@ -17,60 +17,83 @@ a {
 }
 
 .icon {
-	display: block;
+	display: -webkit-inline-box;
+	-webkit-box-align: center;
+	position: relative;
 	margin: 1px;
 	padding: 1px;
 	border: 1px solid #BBB;
 	border-radius: 5px;
 	width: 130px;
-	height: 33px;
+	height: 34px;
 	color: #000;
-	vertical-align: middle;
-	float: left;
 	background-color: #F0F0F0;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
 		from(#FFF), to(#DDD));
-}
-
-.icon-content {
-	margin: 0;
-	padding: 0 0 0 35px;
-	width: 92px;
-	height: 33px;
-	background-repeat: no-repeat;
-	background-position: 0px 0;
-	-webkit-background-size: 32px 32px;
-	max-height: 33px;
-	font-size: 12px;
-	line-height: 16px;
 	text-shadow: 1px 1px 0 #FFF;
-	color: #444;
-	text-align: right;
+	vertical-align: top;
 }
 
-.icon-content button{
+.icon > img {
 	display: block;
-	width: 80px;
-	margin: 0 2px 0 0;
-	font-size: 10px;
-	padding: 0 10px;
-	border: 0;
-	border-radius: 3px;
+	width: 32px;
+	height: 32px;
+	margin: 1px 3px;
+}
+
+.icon > span {
+	display: block;
+	-webkit-box-flex: 1;
+	line-height: 16px;
+	text-align: center;
+	font-size: 12px;
+	min-height: 16px;
+	padding: 0 1em;
+	margin: 1px 0;
+}
+
+.icon > button {
+	display: inline-block;
+	position: absolute;
+	left: 24px;
+	bottom: -3px;
+	margin: 0;
+	font: bold 12px;
+	padding: 0 0.5em;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 8px;
 	color: #FFF;
-	height: 15px;
-	line-height: 14px;
-	float: right;
+	min-width: 16px;
+	height: 16px;
+	line-height: 16px;
+	background-image: -webkit-gradient(linear, left top, left bottom,
+		from(rgba(255, 255, 255, 0.5)), to(rgba(0, 0, 0, 0.2)));
 }
 
-.icon-content button:empty {
+.icon > button:empty {
 	display: none;
+	border: none;
 }
 
-#gmail-badge { background-color: rgb(208, 0, 24); }
-#reader-badge { background-color: #00A; }
-#appengine-badge { background-color: #468; }
+#gmail-badge {
+	background-color: rgb(208, 0, 24);
+	border-color: rgb(96, 0, 0);
+}
 
-#link-list{
+#reader-badge {
+	background-color: rgb(0, 24, 208);
+	border-color: rgb(0, 0, 96);
+}
+
+#appengine-badge {
+	background-color: #468;
+	border-color: #135;
+	left: 16px;
+}
+
+#link-list {
+	display: inline-block;
 	width: 130px;
 	height: 33px;
 	vertical-align: middle;
@@ -78,11 +101,14 @@ a {
 	text-align: right;
 	line-height: 17px;
 	padding: 3px;
-	float: right;
 }
 
-#link-list + br {
-	clear: both;
+#link-list:nth-child(3n-1) {
+	margin-left: 136px;
+}
+
+#link-list:nth-child(3n-2) {
+	margin-left: 272px;
 }
 
 #link-list > a{
