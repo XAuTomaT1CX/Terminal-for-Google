@@ -12,52 +12,49 @@
 	var badge = {
 		_gmail: null,
 		_reader: null,
+		setColor: function(r, g, b, a){
+			chrome.browserAction.setBadgeBackgroundColor({
+				color: [
+					Math.min(r, 255),
+					Math.min(g, 255),
+					Math.min(b, 255),
+					Math.min(a, 255)
+				]
+			});
+		},
+		setText: function(text){
+			chrome.browserAction.setBadgeText({text: text || ''});
+		},
 		refresh: function(){
-			var color = null, text;
+			var r = 0, g = 0, b = 0, text = null;
 			
 			if(this._gmail){
-				if(this._reader){
-					color = [208, 24, 232, 255];
-					text = "!";
-				}else{
-					color = [208, 0, 24, 255];
-					text = this._gmail;
-				}
-			}else if(this._reader){
-				color = [0, 24, 208, 255];
-				text = this._reader;
-			}else{
-				text = "";
+				r += 208;
+				b += 24;
+				text = this._gmail;
 			}
 			
-			if(color){
-				chrome.browserAction.setBadgeBackgroundColor({color: color});
+			if(this._reader){
+				g += 24;
+				b += 208;
+				text = text? '!': this._reader;
 			}
 			
-			chrome.browserAction.setBadgeText({text: text});
+			this.setColor(r, g, b, 255);
+			this.setText(text);
 		},
 		get gmail(){
 			return this._gmail;
 		},
 		set gmail(value){
-			if(value == 0 || value == null){
-				this._gmail = null;
-			}else{
-				this._gmail = String(value);
-			}
-			
+			this._gmail = (value == 0 || value == null)? null: String(value);
 			this.refresh();
 		},
 		get reader(){
 			return this._reader;
 		},
 		set reader(value){
-			if(value == 0 || value == null){
-				this._reader = null;
-			}else{
-				this._reader = String(value);
-			}
-			
+			this._reader = (value == 0 || value == null)? null: String(value);
 			this.refresh();
 		}
 	};
