@@ -186,3 +186,7 @@ p {
 #about > p:first-child {
 	margin-bottom: 2em;
 }
+
+label {
+	display: block;
+}

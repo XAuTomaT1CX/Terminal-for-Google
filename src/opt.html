@@ -22,6 +22,10 @@
 			<input type="checkbox" name="secure-box" id="secure-box" />
 			<span>Use HTTPS</span>
 		</label>
+		<label for="icon-only-box">
+			<input type="checkbox" name="icon-only-box" id="icon-only-box" />
+			<span>Show icon only</span>
+		</label>
 	</section>
 	
 	<section id="service">
@@ -99,6 +103,14 @@
 				secureBox.checked = e.value;
 			}
 		};
+		
+		
+		// アイコンだけ表示するかどうかの設定項目
+		var iconOnlyBox = document.getElementById('icon-only-box');
+		iconOnlyBox.checked = pref.get('icon-only', false);
+		iconOnlyBox.addEventListener("change", function(){
+			pref.set('icon-only', this.checked);
+		}, false);
 		
 		
 		// サービスのアイコンを作成

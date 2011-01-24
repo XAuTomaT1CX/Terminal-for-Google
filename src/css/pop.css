@@ -3,10 +3,17 @@ html, body {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	width: 408px;
 	background-color: #FFF;
 	-webkit-user-select: none;
 	overflow: hidden;
+}
+
+body {
+	width: 408px;
+}
+
+body.icon-only {
+	width: 120px;
 }
 
 a {
@@ -84,6 +91,29 @@ a {
 	border: none;
 }
 
+.icon-only .icon {
+	width: 34px;
+}
+
+.icon-only .icon > img {
+	width: 32px;
+	height: 32px;
+	margin: 1px;
+}
+
+.icon-only .icon > span {
+	display: none;
+}
+
+.icon-only .icon > button {
+	left: 16px;
+	width: 24px;
+	height: 16px;
+	text-overflow: clip;
+	overflow: hidden;
+	z-index: 2;
+}
+
 #gmail-badge {
 	background-color: rgb(208, 0, 24);
 	border-color: rgb(96, 0, 0);
@@ -111,6 +141,11 @@ a {
 	line-height: 17px;
 	padding: 2px;
 	margin: 1px;
+}
+
+.icon-only #link-list {
+	width: 116px;
+	margin-left: 0px !important;
 }
 
 #link-list:nth-child(3n-1) {

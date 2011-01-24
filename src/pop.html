@@ -22,6 +22,11 @@
 			return node;
 		}
 		
+		var showIconOnly = pref.get('icon-only', false);
+		if(showIconOnly){
+			document.body.classList.add('icon-only');
+		}
+		
 		var linkList = $id("link-list");
 		
 		// サービスのアイコンを作成してbodyに追加
@@ -98,7 +103,7 @@
 		});
 		
 		$id('appengine-badge', function(gae){
-			gae.textContent = 'Status';
+			gae.textContent = showIconOnly? '*': 'Status';
 			gae.addEventListener('click', function(e){
 				var url = (pref.get('secure', true)? 'https://': 'http://') +
 					"code.google.com/status/appengine";
