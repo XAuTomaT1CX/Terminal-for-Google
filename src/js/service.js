@@ -347,6 +347,11 @@ var services = [{
 	id: 'accounts',
 	name: 'Accounts',
 	url: 'https://www.google.com/accounts/'
+}, {
+	id: 'news',
+	name: 'Google News',
+	url: 'news.google.com',
+	icon: 'icons/news.png'
 }].map(function(args){
 	return new Service(args);
 });
