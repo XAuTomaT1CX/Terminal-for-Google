@@ -209,11 +209,11 @@
 			var service = services[id];
 			if(service.isEnabled){
 				enabledServices[id] = service;
-				serviceIds.pop(serviceIds.indexOf(id));
+				serviceIds.splice(serviceIds.indexOf(id), 1);
 				enabledServiceList.appendChild(createIcon(service));
 			}else{
 				disabledServices[id] = service;
-				serviceIds.pop(serviceIds.indexOf(id));
+				serviceIds.splice(serviceIds.indexOf(id), 1);
 				disabledServiceList.appendChild(createIcon(service));
 			}
 		});
