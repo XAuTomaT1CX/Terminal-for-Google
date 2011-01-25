@@ -6,6 +6,7 @@ html, body {
 	width: 408px;
 	background-color: #FFF;
 	-webkit-user-select: none;
+	overflow: hidden;
 }
 
 a {
@@ -56,8 +57,8 @@ a {
 	display: inline-block;
 	position: absolute;
 	left: 24px;
-	bottom: -3px;
-	margin: 0;
+	bottom: 0;
+	margin: 0 0 -2px;
 	font: bold 12px;
 	padding: 0 0.5em;
 	border-width: 1px;
@@ -69,6 +70,7 @@ a {
 	line-height: 16px;
 	background-image: -webkit-gradient(linear, left top, left bottom,
 		from(rgba(255, 255, 255, 0.5)), to(rgba(0, 0, 0, 0.2)));
+	opacity: 0.80;
 }
 
 .icon > button:empty {
@@ -93,14 +95,16 @@ a {
 }
 
 #link-list {
-	display: inline-block;
+	display: -webkit-inline-box;
+	-webkit-box-orient: vertical;
 	width: 130px;
-	height: 33px;
+	height: 34px;
 	vertical-align: middle;
 	font-size: 12px;
 	text-align: right;
 	line-height: 17px;
-	padding: 3px;
+	padding: 2px;
+	margin: 1px;
 }
 
 #link-list:nth-child(3n-1) {
@@ -111,6 +115,8 @@ a {
 	margin-left: 272px;
 }
 
-#link-list > a{
+#link-list > a {
+	display: block;
 	color: #444;
+	text-align: right;
 }
