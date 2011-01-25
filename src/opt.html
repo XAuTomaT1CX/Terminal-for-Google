@@ -33,10 +33,9 @@
 	
 	<section id="about">
 		<p>
-			Google Terminal is created by
+			<em>Google Terminal</em> is created by
 			<a href="http://twitter.com/chick307" target="_blank">@chick307</a>.
 		</p>
-		<br />
 		<p>
 			<em>Tasks</em> Icon by 
 			<a href="http://www.dezinerfolio.com/2008/08/28/on-stage-free-vector-psd-icon-set" target="_blank">
@@ -92,7 +91,7 @@
 			node.classList.add('service-item');
 			node.href = '#';
 			node.addEventListener('click', function(e){
-				service.open();
+				e.preventDefault();
 			}, false);
 			node.addEventListener('dragstart', function(e){
 				e.dataTransfer.setData('Text', service.id);
