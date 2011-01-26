@@ -227,7 +227,7 @@
 			if(service.isEnabled){
 				enabledServices[id] = service;
 				enabledServiceList.appendChild(createIcon(service));
-			}else if(id in disabledServices){
+			}else{
 				disabledServices[id] = service;
 				disabledServiceList.appendChild(createIcon(service));
 			}
