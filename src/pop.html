@@ -31,6 +31,7 @@
 			node.href = '#';
 			node.addEventListener('click', function(e){
 				service.open();
+				e.preventDefault();
 			}, false);
 			
 			var icon = document.createElement('img');

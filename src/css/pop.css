@@ -35,11 +35,17 @@ a {
 	vertical-align: top;
 }
 
+.icon:active {
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
+		from(#DDD), to(#EEE));
+}
+
 .icon > img {
 	display: block;
 	width: 32px;
 	height: 32px;
 	margin: 1px 3px;
+	-webkit-user-drag: none;
 }
 
 .icon > span {
