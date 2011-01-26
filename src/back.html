@@ -4,7 +4,7 @@
 
 <meta charset="utf-8"/>
 <script src="js/http.js"></script>
-
+<script src="js/service.js"></script>
 <script src="js/pref.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
@@ -64,13 +64,13 @@
 		try{
 			var json = JSON.parse(str);
 			
-			if(json.secure !== void 0){
+			if(json.secure != null){
 				pref.setDefault('secure', json.secure);
 			}
 			
-			services.forEach(function(service){
-				var key = service.id + '-enabled';
-				if(json[key] != void 0){
+			serviceInfo.forEach(function(service){
+				var key = serviceInfo.id + '-enabled';
+				if(json[key] != null){
 					pref.setDefault(key, json[key]);
 				}
 			});
@@ -80,9 +80,9 @@
 		
 		localStorage.removeItem('pref');
 	})(localStorage.pref);
+	
+	initialize();
 </script>
-
-<script src="js/service.js"></script>
 
 </head>
 <body></body>

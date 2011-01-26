@@ -239,7 +239,7 @@ function GoogleReader(){
 }
 
 
-var services = [{
+var serviceInfo = [{
 	id: 'gmail',
 	name: 'Gmail',
 	url: 'mail.google.com/mail',
@@ -352,6 +352,11 @@ var services = [{
 	name: 'Google News',
 	url: 'news.google.com',
 	icon: 'icons/news.png'
-}].map(function(args){
-	return new Service(args);
-});
+}];
+
+var services;
+function initialize(){
+	services = serviceInfo.map(function(args){
+		return new Service(args);
+	});
+}
