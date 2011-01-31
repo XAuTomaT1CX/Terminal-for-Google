@@ -352,6 +352,11 @@ var serviceInfo = [{
 	name: 'Google News',
 	url: 'news.google.com',
 	icon: 'icons/news.png'
+}, {
+	id: 'maps',
+	name: 'Google Maps',
+	url: 'maps.google.com',
+	icon: 'icons/maps.png'
 }];
 
 var services;
