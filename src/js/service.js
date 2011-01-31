@@ -22,6 +22,15 @@ function Service(args){
 	if(pref.get(args.id + '-enabled', true)){
 		this.enable();
 	}
+	
+	// コンテキストメニューを削除
+	if(args.menus && args.menus.length > 0){
+		window.addEventListener('unload', function(){
+			this.menuIds.forEach(function(menuId){
+				chrome.contextMenus.remove(menuId);
+			});
+		}.bind(this), false);
+	}
 }
 
 Object.defineProperties(Service.prototype, {
