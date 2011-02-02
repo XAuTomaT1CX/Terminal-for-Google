@@ -5,6 +5,7 @@ function Preference(args){
 	var suffix = args.suffix || '';
 	var storage = args.storage || localStorage;
 	var cache = {};
+	var listeners = [];
 	
 	this.get = function(key, defaultValue){
 		key = prefix + key + suffix;
@@ -22,8 +23,11 @@ function Preference(args){
 	};
 	
 	this.set = function(key, value){
-		key = prefix + key + suffix;
-		storage[key] = JSON.stringify(cache[key] = value);
+		var key_ = prefix + key + suffix;
+		storage[key_] = JSON.stringify(cache[key_] = value);
+		listeners.forEach(function(listener){
+			listener.call(null, key, value, pref);
+		});
 		return value;
 	};
 	
@@ -33,4 +37,19 @@ function Preference(args){
 			result = this.set(key, value);
 		return result;
 	}
+	
+	this.onChange = {
+		addListener: function(listener){
+			listeners.push(listener);
+		},
+		removeListener: function(listener){
+			var i = listeners.indexOf(listener);
+			if(i !== -1){
+				listeners.splice(i, 1);
+			}
+		},
+		hasListener: function(listener){
+			return listeners.indexOf(listener) !== -1;
+		}
+	};
 }
