@@ -8,6 +8,15 @@
 <script src="js/pref.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
+	pref.onChange.addListener(function(key, value){
+		var e = document.createEvent('Event');
+		e.initEvent('pref-changed', false, false);
+		e.key = key;
+		e.value = value;
+		chrome.extension.getViews().forEach(function(view){
+			view.dispatchEvent(e);
+		});
+	});
 	
 	var badge = {
 		_gmail: null,

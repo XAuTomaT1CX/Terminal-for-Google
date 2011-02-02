@@ -80,6 +80,13 @@
 			history.replaceState('', '', 'opt.html#policy');
 		}
 		
+		var listeners = {};
+		window.addEventListener('pref-changed', function(e){
+			if(e.key in listeners){
+				listeners[e.key].call(null, e);
+			}
+		});
+		
 		
 		// HTTPSにするかどうかの設定項目
 		var secureBox = document.getElementById("secure-box");
@@ -87,6 +94,11 @@
 		secureBox.addEventListener("change", function(){
 			pref.set('secure', this.checked);
 		}, false);
+		listeners['secure'] = function(e){
+			if(secureBox.checked !== e.value){
+				secureBox.checked = e.value;
+			}
+		};
 		
 		
 		// サービスのアイコンを作成
@@ -215,17 +227,55 @@
 		
 		// 順番にしたがってサービスのアイコンを作成
 		pref.get('service-order', []).forEach(function(id){
-			var service = services[id];
+			var service = services[id],
+				icon = createIcon(service);
+			
 			if(service.isEnabled){
 				enabledServices[id] = service;
 				serviceIds.splice(serviceIds.indexOf(id), 1);
-				enabledServiceList.appendChild(createIcon(service));
+				enabledServiceList.appendChild(icon);
 			}else{
 				disabledServices[id] = service;
 				serviceIds.splice(serviceIds.indexOf(id), 1);
-				disabledServiceList.appendChild(createIcon(service));
+				disabledServiceList.appendChild(icon);
 			}
+			
+			listeners[id + '-enabled'] = function(e){
+				if(e.value){
+					if(id in disabledServices){
+						enabledServices[id] = service;
+						delete disabledServices[id];
+						enabledServiceList.appendChild(icon);
+					}
+				}else{
+					if(id in enabledServices){
+						disabledServices[id] = service;
+						delete enabledServices[id];
+						disabledServiceList.appendChild(icon);
+					}
+				}
+			};
 		});
+		
+		listeners['service-order'] = function(e){
+			var order = e.value.slice(), enabled = null, disabled = null, e;
+			order.reverse().forEach(function(id){
+				e = document.getElementById(id)
+				if(id in enabledServices){
+					if(enabled != null && enabled.previousSibling !== e){
+						enabledServiceList.insertBefore(e, enabled);
+					}
+					
+					enabled = e;
+				}else{
+					if(disabled != null && disabled.previousSibling !== e){
+						disabledServiceList.insertBefore(e, disabled);
+					}
+					
+					disabled = e;
+				}
+			});
+		};
 		
 		serviceIds.forEach(function(id){
 			var service = services[id];
