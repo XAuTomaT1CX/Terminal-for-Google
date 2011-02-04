@@ -107,9 +107,8 @@ a {
 
 .icon-only .icon > button {
 	left: 16px;
-	width: 24px;
+	width: 22px;
 	height: 16px;
-	text-overflow: clip;
 	overflow: hidden;
 	z-index: 2;
 }

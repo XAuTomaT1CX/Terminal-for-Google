@@ -95,15 +95,23 @@
 		
 		// バッジの内容を入れる
 		$id('gmail-badge', function(gmailBadge){
-			gmailBadge.textContent = badge.gmail || '';
+			if(showIconOnly && parseInt(badge.gmail) > 99){
+				gmailBadge.textContent = '!';
+			}else{
+				gmailBadge.textContent = badge.gmail || '';
+			}
 		});
 		
 		$id('reader-badge', function(readerBadge){
-			readerBadge.textContent = badge.reader || '';
+			if(showIconOnly && parseInt(badge.reader) > 99){
+				readerBadge.textContent = '!';
+			}else{
+				readerBadge.textContent = badge.reader || '';
+			}
 		});
 		
 		$id('appengine-badge', function(gae){
-			gae.textContent = showIconOnly? '*': 'Status';
+			gae.textContent = showIconOnly? '?': 'Status';
 			gae.addEventListener('click', function(e){
 				var url = (pref.get('secure', true)? 'https://': 'http://') +
 					"code.google.com/status/appengine";
