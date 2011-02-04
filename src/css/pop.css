@@ -8,17 +8,12 @@ html, body {
 	overflow: hidden;
 }
 
-body {
-	width: 408px;
-}
-
-body.icon-only {
-	width: 120px;
-}
-
-a {
-	text-decoration: none;
-}
+body.columns-3 { width: 420px; }
+body.columns-4 { width: 560px; }
+body.columns-5 { width: 700px; }
+body.columns-3.icon-only { width: 120px; }
+body.columns-4.icon-only { width: 160px; }
+body.columns-5.icon-only { width: 200px; }
 
 #icon-template {
 	display: none;
@@ -27,19 +22,30 @@ a {
 .icon {
 	display: -webkit-inline-box;
 	-webkit-box-align: center;
+	-webkit-box-sizing: border-box;
 	position: relative;
 	margin: 1px;
 	padding: 1px;
 	border: 1px solid #BBB;
 	border-radius: 5px;
-	width: 130px;
-	height: 34px;
+	width: 138px;
+	height: 38px;
 	color: #000;
-	background-color: #F0F0F0;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
 		from(#FFF), to(#DDD));
 	text-shadow: 1px 1px 0 #FFF;
+	text-decoration: none;
 	vertical-align: top;
+}
+
+body:not(.icon-only).columns-3 .icon:last-of-type:nth-of-type(3n),
+body:not(.icon-only).columns-4 .icon:last-of-type:nth-of-type(4n),
+body:not(.icon-only).columns-5 .icon:last-of-type:nth-of-type(5n),
+.icon-only.columns-3 .icon:last-of-type,
+.icon-only.columns-4 .icon:last-of-type:not(:nth-child(4n-3)),
+.icon-only.columns-5
+.icon:last-of-type:not(:nth-child(5n-3)):not(:nth-child(5n-4)) {
+	margin-bottom: 41px;
 }
 
 .icon:active {
@@ -51,7 +57,7 @@ a {
 	display: block;
 	width: 32px;
 	height: 32px;
-	margin: 1px 3px;
+	margin: 1px;
 	-webkit-user-drag: none;
 }
 
@@ -92,13 +98,7 @@ a {
 }
 
 .icon-only .icon {
-	width: 34px;
-}
-
-.icon-only .icon > img {
-	width: 32px;
-	height: 32px;
-	margin: 1px;
+	width: 38px;
 }
 
 .icon-only .icon > span {
@@ -110,6 +110,7 @@ a {
 	width: 22px;
 	height: 16px;
 	overflow: hidden;
+	padding: 0;
 	z-index: 2;
 }
 
@@ -130,33 +131,28 @@ a {
 }
 
 #link-list {
+	position: absolute;
+	right: 0;
+	bottom: 0;
 	display: -webkit-inline-box;
 	-webkit-box-orient: vertical;
-	width: 130px;
-	height: 34px;
-	vertical-align: middle;
-	font-size: 12px;
-	text-align: right;
-	line-height: 17px;
-	padding: 2px;
+	-webkit-box-sizing: border-box;
+	width: 118px;
+	height: 38px;
+	vertical-align: top;
+	padding: 1px;
 	margin: 1px;
 }
 
-.icon-only #link-list {
-	width: 116px;
-	margin-left: 0px !important;
-}
-
-#link-list:nth-child(3n-1) {
-	margin-left: 136px;
-}
-
-#link-list:nth-child(3n-2) {
-	margin-left: 272px;
-}
-
 #link-list > a {
+	-webkit-box-flex: 1;
 	display: block;
 	color: #444;
 	text-align: right;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+#link-list > a:hover {
+	text-decoration: underline;
 }

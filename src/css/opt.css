@@ -121,8 +121,18 @@ input {
 	padding: 0;
 	border: 1px solid #CCC;
 	border-radius: 5px;
-	width: 408px;
+	width: 420px;
 	min-height: 38px;
+}
+
+.columns-4 #enabled-service-list,
+.columns-4 #disabled-service-list {
+	width: 560px;
+}
+
+.columns-5 #enabled-service-list,
+.columns-5 #disabled-service-list {
+	width: 700px;
 }
 
 #service-item-template {
@@ -132,15 +142,15 @@ input {
 .service-item {
 	display: -webkit-inline-box;
 	-webkit-box-align: center;
+	-webkit-box-sizing: border-box;
 	position: relative;
 	margin: 1px;
 	padding: 1px;
 	border: 1px solid #BBB;
 	border-radius: 5px;
-	width: 130px;
-	height: 34px;
+	width: 138px;
+	height: 38px;
 	color: #000;
-	background-color: #F0F0F0;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
 		from(#FFF), to(#DDD));
 	text-shadow: 1px 1px 0 #FFF;
@@ -149,15 +159,17 @@ input {
 	vertical-align: top;
 }
 
-.service-item:nth-of-type(3n):last-child {
-	margin-bottom: 39px;
+.columns-3 .service-item:nth-of-type(3n):last-child,
+.columns-4 .service-item:nth-of-type(4n):last-child,
+.columns-5 .service-item:nth-of-type(5n):last-child {
+	margin-bottom: 41px;
 }
 
 .service-item img {
 	display: block;
 	width: 32px;
 	height: 32px;
-	margin: 1px 3px;
+	margin: 1px;
 	-webkit-user-drag: none;
 }
 
@@ -189,4 +201,8 @@ p {
 
 label {
 	display: block;
+}
+
+select {
+	font-size: 16px;
 }

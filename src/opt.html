@@ -26,6 +26,13 @@
 			<input type="checkbox" name="icon-only-box" id="icon-only-box" />
 			<span>Show icon only</span>
 		</label>
+		<label for="columns-box">
+			<select name="columns-box" id="columns-box">
+				<option value="3">3 Columns</option>
+				<option value="4">4 Columns</option>
+				<option value="5">5 Columns</option>
+			</select>
+		</label>
 	</section>
 	
 	<section id="service">
@@ -116,6 +123,14 @@
 				iconOnlyBox.checked = e.value;
 			}
 		};
+		
+		// アイコンの列の数
+		var columns = pref.get('columns', 3);
+		var columnsBox = document.getElementById('columns-box');
+		columnsBox.value = columns;
+		columnsBox.addEventListener("change", function(){
+			pref.set('columns', this.value);
+		}, false);
 		
 		
 		// サービスのアイコンを作成
@@ -241,6 +256,16 @@
 			
 			saveServiceOrder();
 		}, false);
+		
+		
+		enabledServiceList.parentNode.classList.add('columns-' + columns);
+		listeners['columns'] = function(e){
+			enabledServiceList.parentNode.classList.remove('columns-3');
+			enabledServiceList.parentNode.classList.remove('columns-4');
+			enabledServiceList.parentNode.classList.remove('columns-5');
+			enabledServiceList.parentNode.classList.add('columns-' + e.value);
+		};
+		
 		
 		// 順番にしたがってサービスのアイコンを作成
 		pref.get('service-order', []).forEach(function(id){

@@ -6,7 +6,7 @@
 </head>
 <body>
 	<div id="link-list">
-		<a href="#" id="status-link" class="link">Google Apps Status</a>
+		<a href="#" id="status-link" class="link">Apps Dashboard</a>
 		<a href="#" id="option-link" class="link">Option Page</a>
 	</div>
 	<script type="text/javascript">
@@ -14,8 +14,21 @@
 		var pref = backgroundPage.pref,
 			badge = backgroundPage.badge;
 		
-		window.addEventListener('pref-changed', function(){
-			location.reload();
+		window.addEventListener('pref-changed', function(e){
+			if(e.key === 'icon-only'){
+				if(e.value){
+					document.body.classList.add('icon-only');
+				}else{
+					document.body.classList.remove('icon-only');
+				}
+			}else if(e.key === 'columns'){
+				document.body.classList.remove('columns-3');
+				document.body.classList.remove('columns-4');
+				document.body.classList.remove('columns-5');
+				document.body.classList.add('columns-' + e.value);
+			}else{
+				location.reload();
+			}
 		});
 		
 		window.addEventListener('badge-changed', function(){
@@ -29,6 +42,9 @@
 			}
 			return node;
 		}
+		
+		var columns = pref.get('columns', 3);
+		document.body.classList.add('columns-' + columns);
 		
 		var showIconOnly = pref.get('icon-only', false);
 		if(showIconOnly){
