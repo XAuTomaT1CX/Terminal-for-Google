@@ -19,6 +19,20 @@
 	});
 	
 	var badge = {
+		_listener: [],
+		onChange: {
+			addListener: function(listener){
+				badge._listener.push(listener);
+			},
+			removeListener: function(listener){
+				var i = badge._listener.indexOf(listener);
+				if(i > -1)
+					badge._listener.splice(i, 1);
+			},
+			hasListener: function(){
+				return badge._listener.indexOf(listener) !== -1;
+			}
+		},
 		_gmail: null,
 		_reader: null,
 		setColor: function(r, g, b, a){
@@ -51,6 +65,10 @@
 			
 			this.setColor(r, g, b, 255);
 			this.setText(text);
+			
+			this._listener.forEach(function(listener){
+				listener.call(badge);
+			});
 		},
 		get gmail(){
 			return this._gmail;
@@ -67,6 +85,15 @@
 			this.refresh();
 		}
 	};
+	
+	badge.onChange.addListener(function(){
+		var e = document.createEvent('Event');
+		e.initEvent('badge-changed', false, false);
+		e.value = badge;
+		chrome.extension.getViews().forEach(function(view){
+			view.dispatchEvent(e);
+		});
+	});
 	
 	// 古い設定の引き継ぎ
 	localStorage.pref && (function(str){
