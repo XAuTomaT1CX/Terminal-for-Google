@@ -376,6 +376,11 @@ var serviceInfo = [{
 	name: 'Google Groups',
 	url: 'groups.google.com',
 	icon: 'icons/groups.png'
+}, {
+	id: 'igoogle',
+	name: 'iGoogle',
+	url: 'http://www.google.com/ig',
+	icon: 'icons/igoogle.png'
 }];
 
 var services;
