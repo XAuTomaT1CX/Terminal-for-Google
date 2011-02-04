@@ -21,10 +21,12 @@
 		<label for="secure-box">
 			<input type="checkbox" name="secure-box" id="secure-box" />
 			<span>Use HTTPS</span>
+			<span class="msg"></span>
 		</label>
 		<label for="icon-only-box">
 			<input type="checkbox" name="icon-only-box" id="icon-only-box" />
 			<span>Show icon only</span>
+			<span class="msg"></span>
 		</label>
 		<label for="columns-box">
 			<select name="columns-box" id="columns-box">
@@ -32,6 +34,7 @@
 				<option value="4">4 Columns</option>
 				<option value="5">5 Columns</option>
 			</select>
+			<span class="msg"></span>
 		</label>
 	</section>
 	
@@ -99,38 +102,77 @@
 		});
 		
 		
+		var createOnSavedFunc = function(node){
+			var label = node.parentNode;
+			var timeout;
+			
+			return function(){
+				var self = arguments.callee;
+				if(timeout){
+					clearTimeout(timeout);
+					label.classList.remove('changed');
+					timeout = setTimeout(function(){
+						timeout = null;
+						self();
+					}, 500);
+					return;
+				}
+				
+				label.classList.add('changed');
+				timeout = setTimeout(function(){
+					label.classList.remove('changed');
+					timout = null;
+				}, 3000);
+			};
+		};
+		
+		
 		// HTTPSにするかどうかの設定項目
 		var secureBox = document.getElementById("secure-box");
+		var onSecureSaved = createOnSavedFunc(secureBox);
 		secureBox.checked = pref.get('secure', true);
 		secureBox.addEventListener("change", function(){
 			pref.set('secure', this.checked);
+			onSecureSaved();
 		}, false);
 		listeners['secure'] = function(e){
 			if(secureBox.checked !== e.value){
 				secureBox.checked = e.value;
+				onSecureSaved();
 			}
 		};
 		
 		
 		// アイコンだけ表示するかどうかの設定項目
 		var iconOnlyBox = document.getElementById('icon-only-box');
+		var onIconOnlySaved = createOnSavedFunc(iconOnlyBox);
 		iconOnlyBox.checked = pref.get('icon-only', false);
 		iconOnlyBox.addEventListener("change", function(){
 			pref.set('icon-only', this.checked);
+			onIconOnlySaved();
 		}, false);
 		listeners['icon-only'] = function(e){
 			if(iconOnlyBox.checked !== e.value){
 				iconOnlyBox.checked = e.value;
+				onIconOnlySaved();
 			}
 		};
 		
 		// アイコンの列の数
 		var columns = pref.get('columns', 3);
 		var columnsBox = document.getElementById('columns-box');
+		var onColumnsSaved = createOnSavedFunc(columnsBox);
 		columnsBox.value = columns;
 		columnsBox.addEventListener("change", function(){
 			pref.set('columns', this.value);
+			onColumnsSaved();
 		}, false);
+		listeners['columns'] = function(e){
+			if(columnsBox.checked !== e.value){
+				columnsBox.checked = e.value;
+				onColumnsSaved();
+			}
+		};
 		
 		
 		// サービスのアイコンを作成

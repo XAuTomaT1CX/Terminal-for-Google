@@ -203,6 +203,25 @@ label {
 	display: block;
 }
 
+label > .msg:after {
+	content: "Saved !";
+}
+
+label > .msg {
+	display: inline-block;
+	color: #FFF;
+	background-color: #66DD66;
+	margin: 1px;
+	padding: 0 1em;
+	border-radius: 10px;
+	opacity: 0;
+	-webkit-transition: opacity 0.5s;
+}
+
+label.changed > .msg {
+	opacity: 1;
+}
+
 select {
 	font-size: 16px;
 }
