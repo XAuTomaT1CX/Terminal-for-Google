@@ -14,6 +14,14 @@
 		var pref = backgroundPage.pref,
 			badge = backgroundPage.badge;
 		
+		window.addEventListener('pref-changed', function(){
+			location.reload();
+		});
+		
+		window.addEventListener('badge-changed', function(){
+			setBadge();
+		});
+		
 		function $id(id, callback){
 			var node = document.getElementById(id);
 			if(node && callback){
@@ -93,22 +101,26 @@
 			});
 		});
 		
-		// バッジの内容を入れる
-		$id('gmail-badge', function(gmailBadge){
-			if(showIconOnly && parseInt(badge.gmail) > 99){
-				gmailBadge.textContent = '!';
-			}else{
-				gmailBadge.textContent = badge.gmail || '';
-			}
-		});
+		// バッジの内容を設定
+		function setBadge(){
+			$id('gmail-badge', function(gmailBadge){
+				if(showIconOnly && parseInt(badge.gmail) > 99){
+					gmailBadge.textContent = '!';
+				}else{
+					gmailBadge.textContent = badge.gmail || '';
+				}
+			});
+			
+			$id('reader-badge', function(readerBadge){
+				if(showIconOnly && parseInt(badge.reader) > 99){
+					readerBadge.textContent = '!';
+				}else{
+					readerBadge.textContent = badge.reader || '';
+				}
+			});
+		}
 		
-		$id('reader-badge', function(readerBadge){
-			if(showIconOnly && parseInt(badge.reader) > 99){
-				readerBadge.textContent = '!';
-			}else{
-				readerBadge.textContent = badge.reader || '';
-			}
-		});
+		setBadge();
 		
 		$id('appengine-badge', function(gae){
 			gae.textContent = showIconOnly? '?': 'Status';
