@@ -371,6 +371,11 @@ var serviceInfo = [{
 	name: 'Android Market',
 	url: 'https://market.android.com/',
 	icon: 'icons/android-market.png'
+}, {
+	id: 'groups',
+	name: 'Google Groups',
+	url: 'groups.google.com',
+	icon: 'icons/groups.png'
 }];
 
 var services;
