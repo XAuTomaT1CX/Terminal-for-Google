@@ -111,6 +111,11 @@
 		iconOnlyBox.addEventListener("change", function(){
 			pref.set('icon-only', this.checked);
 		}, false);
+		listeners['icon-only'] = function(e){
+			if(iconOnlyBox.checked !== e.value){
+				iconOnlyBox.checked = e.value;
+			}
+		};
 		
 		
 		// サービスのアイコンを作成
