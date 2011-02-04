@@ -366,6 +366,11 @@ var serviceInfo = [{
 	name: 'Google Maps',
 	url: 'maps.google.com',
 	icon: 'icons/maps.png'
+}, {
+	id: 'android',
+	name: 'Android Market',
+	url: 'https://market.android.com/',
+	icon: 'icons/android-market.png'
 }];
 
 var services;
