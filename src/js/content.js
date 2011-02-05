@@ -15,7 +15,7 @@ var resolveLinkUrl = (function(){
 			return linkStore.text;
 		}
 		
-		alert('Failed at getting link information.', 'Google Terminal');
+		alert('Failed at getting link information.', 'Terminal for Google');
 		throw 'Failed at getting link information.'
 	};
 })();
