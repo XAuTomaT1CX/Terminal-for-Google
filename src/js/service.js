@@ -381,6 +381,10 @@ var serviceInfo = [{
 	name: 'iGoogle',
 	url: 'http://www.google.com/ig',
 	icon: 'icons/igoogle.png'
+}, {
+	id: 'notebook',
+	name: 'Google Notebook',
+	url: 'www.google.com/notebook/'
 }];
 
 var services;
