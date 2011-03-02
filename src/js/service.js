@@ -4,7 +4,7 @@ function Service(args){
 		id: {value: args.id},
 		name: {value: args.name},
 		url: {value: args.url},
-		icon: {value: args.icon || 'icons/google.png'},
+		icon: {value: args.icon || 'image/goog-logo.png'},
 		menus: {value: args.menus || []},
 		urlContainsScheme: {value: /^[a-z]+:/.test(args.url)},
 		onEnabled: {value: []},
@@ -252,7 +252,7 @@ var serviceInfo = [{
 	id: 'gmail',
 	name: 'Gmail',
 	url: 'mail.google.com/mail',
-	icon: 'icons/gmail.png',
+	icon: 'image/goog-mail.png',
 	menus: [{
 		title: 'Mail This Page',
 		context: 'page',
@@ -270,52 +270,52 @@ var serviceInfo = [{
 	id: 'calendar',
 	name: 'Google Calendar',
 	url: 'www.google.com/calendar',
-	icon: 'icons/calendar.png'
+	icon: 'image/goog-cal.png'
 }, {
 	id: 'reader',
 	name: 'Google Reader',
 	url: 'www.google.com/reader',
-	icon: 'icons/reader.png'
+	icon: 'image/goog-reader.png'
 }, {
 	id: 'contacts',
 	name: 'Contacts',
 	url: 'www.google.com/contacts',
-	icon: 'icons/contacts.png'
+	icon: 'image/goog-contacts.png'
 }, {
 	id: 'tasks',
 	name: 'Tasks',
 	url: 'mail.google.com/tasks/canvas',
-	icon: 'icons/tasks.png'
+	icon: 'image/goog-tasks.png'
 }, {
 	id: 'docs',
 	name: 'Google Docs',
 	url: 'docs.google.com',
-	icon: 'icons/docs.png'
+	icon: 'image/goog-docs.png'
 }, {
 	id: 'sites',
 	name: 'Google Sites',
 	url: 'sites.google.com',
-	icon: 'icons/sites.png'
+	icon: 'image/goog-sites.png'
 }, {
 	id: 'analytics',
 	name: 'Analytics',
 	url: 'www.google.com/analytics/settings/home',
-	icon: 'icons/analytics.png'
+	icon: 'image/goog-analytics.png'
 }, {
 	id: 'tools',
 	name: 'Webmaster Tools',
 	url: 'www.google.com/webmasters/tools/home',
-	icon: 'icons/webmaster.png'
+	icon: 'image/goog-webmaster.png'
 }, {
 	id: 'feed',
 	name: 'FeedBurner',
 	url: 'feedburner.google.com',
-	icon: 'icons/feedburner.png'
+	icon: 'image/goog-feedburner.png'
 }, {
 	id: 'blog',
 	name: 'Blogger',
 	url: 'www.blogger.com/home',
-	icon: 'icons/blogger.png',
+	icon: 'image/goog-blogger.png',
 	menus: [{
 		title: 'Blog This Page',
 		context: 'page',
@@ -333,21 +333,22 @@ var serviceInfo = [{
 	id: 'adsense',
 	name: 'Adsense',
 	url: 'www.google.com/adsense',
+	icon: 'image/goog-adsense-old.png'
 }, {
 	id: 'appengine',
 	name: 'AppEngine',
 	url: 'appengine.google.com',
-	icon: 'icons/appengine.png'
+	icon: 'image/goog-app-engine.png'
 }, {
 	id: 'picasa',
 	name: 'Picasa',
 	url: 'picasaweb.google.com/home',
-	icon: 'icons/picasa.png'
+	icon: 'image/goog-picasa.png'
 }, {
 	id: 'youtube',
 	name: 'YouTube',
 	url: 'www.youtube.com',
-	icon: 'icons/youtube.png'
+	icon: 'image/goog-you-tube.png'
 }, {
 	id: 'dashboard',
 	name: 'Dashboard',
@@ -355,40 +356,43 @@ var serviceInfo = [{
 }, {
 	id: 'accounts',
 	name: 'Accounts',
-	url: 'https://www.google.com/accounts/'
+	url: 'https://www.google.com/accounts/',
+	icon: 'image/goog-account-settings.png'
 }, {
 	id: 'news',
 	name: 'Google News',
 	url: 'news.google.com',
-	icon: 'icons/news.png'
+	icon: 'image/goog-news.png'
 }, {
 	id: 'maps',
 	name: 'Google Maps',
 	url: 'maps.google.com',
-	icon: 'icons/maps.png'
+	icon: 'image/goog-maps.png'
 }, {
 	id: 'android',
 	name: 'Android Market',
 	url: 'https://market.android.com/',
-	icon: 'icons/android-market.png'
+	icon: 'image/goog-android-market.png'
 }, {
 	id: 'groups',
 	name: 'Google Groups',
 	url: 'groups.google.com',
-	icon: 'icons/groups.png'
+	icon: 'image/goog-groups-old.png'
 }, {
 	id: 'igoogle',
 	name: 'iGoogle',
 	url: 'http://www.google.com/ig',
-	icon: 'icons/igoogle.png'
+	icon: 'image/goog-igoogle-old.png'
 }, {
 	id: 'notebook',
 	name: 'Google Notebook',
-	url: 'www.google.com/notebook/'
+	url: 'www.google.com/notebook/',
+	icon: 'image/goog-notebook.png'
 }, {
 	id: 'translate',
 	name: 'Google Translate',
-	url: 'http://translate.google.com/'
+	url: 'http://translate.google.com/',
+	icon: 'image/goog-translate.png'
 }];
 
 var services;
