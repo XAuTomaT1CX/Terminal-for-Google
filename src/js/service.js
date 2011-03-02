@@ -385,6 +385,10 @@ var serviceInfo = [{
 	id: 'notebook',
 	name: 'Google Notebook',
 	url: 'www.google.com/notebook/'
+}, {
+	id: 'translate',
+	name: 'Google Translate',
+	url: 'http://translate.google.com/'
 }];
 
 var services;
