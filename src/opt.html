@@ -8,8 +8,10 @@
 </head>
 <body>
 	<header>
-		<img src="image/goog-logo-old.png" width="64" height="64" />
-		<h1>Options</h1>
+		<h1>
+			<img src="image/goog-logo-old.png" width="64" height="64" />
+			<span>Options</span>
+		</h1>
 		<ul>
 			<li><a href="#policy">Policy</a></li>
 			<li><a href="#service">Service</a></li>
@@ -18,21 +20,24 @@
 	</header>
 	
 	<section id="policy">
+		<h2>Security</h2>
 		<label for="secure-box">
 			<input type="checkbox" name="secure-box" id="secure-box" />
-			<span>Use HTTPS</span>
+			<span>use HTTPS</span>
 			<span class="msg"></span>
 		</label>
+		<h2>Appearance</h2>
 		<label for="icon-only-box">
 			<input type="checkbox" name="icon-only-box" id="icon-only-box" />
-			<span>Show icon only</span>
+			<span>show icon only</span>
 			<span class="msg"></span>
 		</label>
 		<label for="columns-box">
+			<span>columns</span>
 			<select name="columns-box" id="columns-box">
-				<option value="3">3 Columns</option>
-				<option value="4">4 Columns</option>
-				<option value="5">5 Columns</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
 			</select>
 			<span class="msg"></span>
 		</label>
@@ -47,16 +52,15 @@
 	
 	<section id="about">
 		<p>
-			<a href="https://github.com/Chick307/Google-Terminal">
+			<a href="https://github.com/Chick307/Google-Terminal" target="_blank">
 				<em>Terminal for Google</em>
 			</a> is created by
 			<a href="http://twitter.com/chick307" target="_blank">@chick307</a>.
 		</p>
 		<p>
-			All icons by 
+			All icons this extension uses are created by 
 			<a href="http://tempest.deviantart.com/art/Simply-Google-II-Part-I-192918636" target="_blank">
-				tempest
-			</a>.
+				tempest</a>.
 		</p>
 	</section>
 	
@@ -174,6 +178,7 @@
 			}, false);
 			node.addEventListener('dragstart', function(e){
 				e.dataTransfer.setData('Text', service.id);
+				document.body.classList.add('dragging');
 			}, false);
 			
 			var icon = document.createElement('img');
@@ -205,6 +210,8 @@
 		enabledServiceList.addEventListener('dragenter', preventDefault, false);
 		enabledServiceList.addEventListener('drop', function(e){
 			e.preventDefault();
+			
+			document.body.classList.remove('dragging');
 			
 			var id = event.dataTransfer.getData('Text');
 			var node = document.getElementById(id);
@@ -249,6 +256,8 @@
 		disabledServiceList.addEventListener('dragenter', preventDefault, false);
 		disabledServiceList.addEventListener('drop', function(e){
 			e.preventDefault();
+			
+			document.body.classList.remove('dragging');
 			
 			var id = event.dataTransfer.getData('Text');
 			var node = document.getElementById(id);
