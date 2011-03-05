@@ -38,7 +38,7 @@ function Preference(args){
 		return result;
 	}
 	
-	this.onChange = {
+	this.onPropertyChange = {
 		addListener: function(listener){
 			listeners.push(listener);
 		},

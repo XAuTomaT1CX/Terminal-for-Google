@@ -8,7 +8,7 @@
 <script src="js/pref.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
-	pref.onChange.addListener(function(key, value){
+	pref.onPropertyChange.addListener(function(key, value){
 		var e = document.createEvent('Event');
 		e.initEvent('pref-changed', false, false);
 		e.key = key;
@@ -20,7 +20,7 @@
 	
 	var badge = {
 		_listener: [],
-		onChange: {
+		onPropertyChange: {
 			addListener: function(listener){
 				badge._listener.push(listener);
 			},
@@ -86,7 +86,7 @@
 		}
 	};
 	
-	badge.onChange.addListener(function(){
+	badge.onPropertyChange.addListener(function(){
 		var e = document.createEvent('Event');
 		e.initEvent('badge-changed', false, false);
 		e.value = badge;
