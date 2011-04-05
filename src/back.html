@@ -95,28 +95,6 @@
 		});
 	});
 	
-	// 古い設定の引き継ぎ
-	localStorage.pref && (function(str){
-		try{
-			var json = JSON.parse(str);
-			
-			if(json.secure != null){
-				pref.setDefault('secure', json.secure);
-			}
-			
-			serviceInfo.forEach(function(service){
-				var key = serviceInfo.id + '-enabled';
-				if(json[key] != null){
-					pref.setDefault(key, json[key]);
-				}
-			});
-		}catch(e){
-			console.error(e);
-		}
-		
-		localStorage.removeItem('pref');
-	})(localStorage.pref);
-	
 	initialize();
 </script>
 
