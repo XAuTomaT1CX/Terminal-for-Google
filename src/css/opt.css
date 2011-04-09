@@ -90,8 +90,8 @@ header > ul > li:active {
 header > ul > li.target::before {
 	display: block;
 	content: "";
-	margin-left: -3px;
-	border-width: 0 3px 5px;
+	margin-left: -5px;
+	border-width: 0 5px 5px;
 	border-style: solid;
 	border-color: #008 transparent;
 	width: 0;
@@ -104,8 +104,8 @@ header > ul > li.target::before {
 header > ul > li.target::after {
 	display: block;
 	content: "";
-	margin-left: -3px;
-	border-width: 0 3px 5px;
+	margin-left: -5px;
+	border-width: 0 5px 5px;
 	border-style: solid;
 	border-color: #FFF transparent;
 	width: 0;
@@ -132,7 +132,7 @@ header > ul > li:active > a {
 }
 
 
-section {
+body > section {
 	display: none;
 	-webkit-box-flex: 1;
 	margin: 0 0 15px;
@@ -149,16 +149,16 @@ section {
 		1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
-section:target {
+body > section:target {
 	display: block;
 }
 
-section::-webkit-scrollbar {
+body > section::-webkit-scrollbar {
 	width: 12px;
 	height: 12px;
 }
 
-section::-webkit-scrollbar-thumb {
+body > section::-webkit-scrollbar-thumb {
 	margin: 1px;
 	border: 2px solid #FFF;
 	border-radius: 6px;
