@@ -393,6 +393,16 @@ var serviceInfo = [{
 	name: 'Google Translate',
 	url: 'http://translate.google.com/',
 	icon: 'image/goog-translate.png'
+}, {
+	id: 'voice',
+	name: 'Google Voice',
+	url: 'http://www.google.com/voice',
+	icon: 'image/goog-voice-new.png'
+}, {
+	id: 'bookmarks',
+	name: 'Google Bookmarks',
+	url: 'http://www.google.com/bookmarks',
+	icon: 'image/goog-bookmarks.png'
 }];
 
 var services;
