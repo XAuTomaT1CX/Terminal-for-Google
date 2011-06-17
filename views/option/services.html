@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="/styles/option.css">
+	<style>
+		.service-list {
+			margin: 0 auto;
+			border-radius: 5px;
+			width: 420px;
+			min-height: 40px;
+			background: #FFF;
+			transition: background 0.1s;
+			-webkit-transition: background 0.3s;
+		}
+
+		.dragging .service-list {
+			background: #CDF;
+			box-shadow: 0 0 0 1px #CDF;
+		}
+
+		.columns-4 > .service-list {
+			width: 560px;
+		}
+
+		.columns-5 > .service-list {
+			width: 700px;
+		}
+
+		.service {
+			display: inline-box;
+			display: -webkit-inline-box;
+			box-align: center;
+			-webkit-box-align: center;
+			margin: 1px;
+			border-width: 1px;
+			border-style: solid;
+			border-color: #BBB;
+			border-radius: 5px;
+			width: 138px;
+			height: 38px;
+			background: linear-gradient(top, #FFF, #DDD);
+			background: -webkit-linear-gradient(top, #FFF, #DDD);
+			box-sizing: border-box;
+			user-drag: element;
+			vertical-align: top;
+			-webkit-user-drag: element;
+			cursor: move;
+		}
+
+		.service:-webkit-drag {
+			background: #FFF;
+			opacity: 0.7;
+		}
+
+		.columns-3 > .service-list > .service:nth-child(3n):last-child,
+		.columns-4 > .service-list > .service:nth-child(4n):last-child,
+		.columns-5 > .service-list > .service:nth-child(5n):last-child {
+			margin-bottom: 41px;
+		}
+
+		.service > img {
+			display: block;
+			margin: 2px;
+			width: 32px;
+			height: 32px;
+			user-drag: none;
+			-webkit-user-drag: none;
+		}
+
+		.service > span {
+			display: block;
+			box-flex: 1;
+			-webkit-box-flex: 1;
+			margin: 2px;
+			line-height: 16px;
+			text-align: center;
+			text-shadow: 1px 1px 0 #FFF;
+			font-family: sans-serif;
+			font-size: 12px;
+			color: #000;
+		}
+	</style>
+</head>
+<body>
+	<h1>Enabled Services</h1>
+	<ul id="enabled-services" class="service-list"></ul>
+
+	<h1>Disabled Services</h1>
+	<ul id="disabled-services" class="service-list"></ul>
+
+	<script>
+		var backgroundPage = chrome.extension.getBackgroundPage();
+		var pref = backgroundPage.pref;
+		var services = backgroundPage.services;
+
+
+		document.body.classList.add('columns-' + pref.get('columns', 3));
+
+
+		var serviceOrder = services.reduce(function(serviceOrder, service){
+			if(serviceOrder.indexOf(service.id) === -1)
+				serviceOrder.push(service.id);
+			return serviceOrder;
+		}, pref.get('service-order', [])).reduce(function(serviceOrder, id){
+			if(!serviceOrder.some(function(serviceId){ return id === serviceId; }))
+				serviceOrder.push(id);
+			return serviceOrder;
+		}, []);
+
+		serviceOrder.forEach(function(serviceId){
+			var enabledServices = document.createDocumentFragment();
+			var disabledServices = document.createDocumentFragment();
+
+			services.forEach(function(service){
+				if(service.id !== serviceId)
+					return;
+
+				var icon = createIcon(service);
+
+				if(service.isEnabled){
+					enabledServices.appendChild(icon);
+				}else{
+					disabledServices.appendChild(icon);
+				}
+			});
+
+			Q('#enabled-services').appendChild(enabledServices);
+			Q('#disabled-services').appendChild(disabledServices);
+		});
+
+
+		Q('#enabled-services').addEventListener('dragenter', preventDefault, false);
+		Q('#enabled-services').addEventListener('dragover', preventDefault, false);
+		Q('#disabled-services').addEventListener('dragenter', preventDefault, false);
+		Q('#disabled-services').addEventListener('dragover', preventDefault, false);
+
+		Q('#enabled-services').addEventListener('drop', function(e){
+			onDrop.call(this, e, true);
+		}, false);
+
+		Q('#disabled-services').addEventListener('drop', function(e){
+			onDrop.call(this, e, false);
+		}, false);
+
+		function onDrop(e, enable){
+			preventDefault(e);
+			document.body.classList.remove('dragging');
+
+			var id = event.dataTransfer.getData('Text');
+			var aindex = serviceOrder.indexOf(id);
+			var service = getServiceById(id);
+			var target = e.target;
+
+			if(target === this){
+				serviceOrder.splice(aindex, 1);
+				serviceOrder.push(id);
+				if(enable)
+					service.enable();
+				else
+					service.disable();
+				onServiceOrderChanged();
+				return;
+			}
+
+			while(!target.classList.contains('service'))
+				target = target.parentNode;
+
+			if(id === target.id)
+				return;
+
+			var aindex = serviceOrder.indexOf(id);
+			var bindex = serviceOrder.indexOf(target.id);
+			var b = getServiceById(target.id);
+
+			if(service.isEnabled !== b.isEnabled){
+				if(b.isEnabled)
+					service.enable();
+				else
+					service.disable();
+
+				if(aindex < bindex){
+					serviceOrder.splice(bindex, 0, id);
+					serviceOrder.splice(aindex, 1);
+				}else{
+					serviceOrder.splice(aindex, 1);
+					serviceOrder.splice(bindex, 0, id);
+				}
+			}else if(aindex < bindex){
+				serviceOrder.splice(bindex + 1, 0, id);
+				serviceOrder.splice(aindex, 1);
+			}else{
+				serviceOrder.splice(aindex, 1);
+				serviceOrder.splice(bindex, 0, id);
+			}
+
+			onServiceOrderChanged();
+		}
+
+		function onServiceOrderChanged(o){
+			if(!o)
+				pref.set('service-order', serviceOrder);
+
+			var enabledServices = document.createDocumentFragment();
+			var disabledServices = document.createDocumentFragment();
+
+			serviceOrder.forEach(function(id){
+				var service = getServiceById(id);
+				if(service.isEnabled)
+					enabledServices.appendChild(Q('#' + id));
+				else
+					disabledServices.appendChild(Q('#' + id));
+			});
+
+			Q('#enabled-services').appendChild(enabledServices);
+			Q('#disabled-services').appendChild(disabledServices);
+		}
+
+
+		window.addEventListener('pref-changed', function(e){
+			var key = e.key, value = e.value;
+
+			if(key === 'columns'){
+				document.body.classList.remove('columns-3');
+				document.body.classList.remove('columns-4');
+				document.body.classList.remove('columns-5');
+				document.body.classList.add('columns-' + value);
+			}else if(key === 'service-order'){
+				serviceOrder = value;
+				onServiceOrderChanged(true);
+			}
+		});
+
+
+		function getServiceById(id){
+			var service = null;
+			services.some(function(s){
+				if(s.id === id){
+					service = s;
+					return true;
+				}
+
+				return false;
+			});
+
+			return service;
+		}
+
+
+		function createIcon(service){
+			var icon = document.createElement('li');
+			icon.id = service.id;
+			icon.classList.add('service');
+
+			var image = document.createElement('img');
+			image.src = '/' + service.icon;
+			icon.appendChild(image);
+
+			var name = document.createElement('span');
+			name.textContent = service.name;
+			icon.appendChild(name);
+
+			icon.addEventListener('dragstart', function(e){
+				e.dataTransfer.setData('Text', service.id);
+				document.body.classList.add('dragging');
+			}, false);
+
+			return icon;
+		}
+
+
+		function preventDefault(e){
+			e.preventDefault();
+		}
+
+		function Q(selector){
+			return document.querySelector(selector);
+		}
+	</script>
+</body>
+</html>
+

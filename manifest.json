@@ -24,7 +24,7 @@
 	],
 	
 	"background_page": "back.html",
-	"options_page": "opt.html",
+	"options_page": "views/option.html",
 	
 	"browser_action": {
 		"default_title": "Terminal for Google",

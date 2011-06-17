@@ -112,7 +112,7 @@
 		
 		$id("option-link").addEventListener('click', function(e){
 			chrome.tabs.create({
-				url: chrome.extension.getURL("opt.html"),
+				url: chrome.extension.getURL("/views/option.html"),
 				selected: true
 			});
 		});
