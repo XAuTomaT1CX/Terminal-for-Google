@@ -43,10 +43,10 @@
 			return node;
 		}
 		
-		var columns = pref.get('columns', 3);
+		var columns = pref.get('columns');
 		document.body.classList.add('columns-' + columns);
 		
-		var showIconOnly = pref.get('icon-only', false);
+		var showIconOnly = pref.get('icon-only');
 		if(showIconOnly){
 			document.body.classList.add('icon-only');
 		}
@@ -144,7 +144,7 @@
 		$id('appengine-badge', function(gae){
 			gae.textContent = showIconOnly? '?': 'Status';
 			gae.addEventListener('click', function(e){
-				var url = (pref.get('secure', true)? 'https://': 'http://') +
+				var url = (pref.get('secure')? 'https://': 'http://') +
 					"code.google.com/status/appengine";
 				chrome.tabs.create({url: url, selected: true});
 				window.close();

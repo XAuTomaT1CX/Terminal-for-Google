@@ -81,7 +81,7 @@ Object.defineProperties(Service.prototype, {
 		}, this);
 	}},
 	open: {value: function(){
-		var url, secure = pref.get('secure', true);
+		var url, secure = pref.get('secure');
 		if(this.urlContainsScheme){
 			url = this.url;
 		}else{
@@ -105,7 +105,7 @@ function Gmail(){
 	var polling = null, pollInterval = 1000 * 60 * 5;
 	
 	// フィードURL
-	var feed = (pref.get('secure', true)? "https://": "http://") +
+	var feed = (pref.get('secure')? "https://": "http://") +
 		"mail.google.com/mail/feed/atom";
 	
 	// XMLネームスペース
@@ -138,7 +138,7 @@ function Gmail(){
 	
 	// サービスのページが開かれたら未読チェック
 	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure', true);
+		var url, secure = pref.get('secure');
 		if(this.urlContainsScheme){
 			url = this.url;
 		}else{
@@ -205,7 +205,7 @@ function GoogleReader(){
 	
 	// サービスのページが開かれたら未読チェック
 	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure', true);
+		var url, secure = pref.get('secure');
 		if(this.urlContainsScheme){
 			url = this.url;
 		}else{
