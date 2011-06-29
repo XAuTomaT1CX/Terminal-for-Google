@@ -153,6 +153,8 @@
 		});
 
 		$id('urlshortener-badge', function(badge){
+			if(!pref.get('shorten-button-enabled'))
+				return;
 			badge.textContent = showIconOnly? '+': 'Shorten';
 			badge.addEventListener('click', function(e){
 				e.stopPropagation();
