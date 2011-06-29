@@ -130,6 +130,12 @@ body:not(.icon-only).columns-5 .icon:last-of-type:nth-of-type(5n),
 	left: 16px;
 }
 
+#urlshortener-badge {
+	background-color: #279;
+	border-color: #046;
+	left: 16px;
+}
+
 #link-list {
 	position: absolute;
 	right: 0;
