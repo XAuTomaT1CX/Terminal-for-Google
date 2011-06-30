@@ -74,3 +74,21 @@ a:active {
 	top: 1px;
 }
 
+span.msg {
+	display: inline-block;
+	margin: 0 0.5em;
+	padding: 0 0.5em;
+	border-radius: 3px;
+	background: linear-gradient(top, #0C0, #0A0);
+	background: -webkit-linear-gradient(top, #2C2, #2A2);
+	color: #FFF;
+	text-shadow: -1px -1px 0 #2A2;
+	opacity: 0;
+	transition: opacity 0.1s;
+	-webkit-transition: opacity 0.1s;
+}
+
+span.msg.saved {
+	opacity: 1;
+}
+
