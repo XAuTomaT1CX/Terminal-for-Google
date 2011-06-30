@@ -207,6 +207,9 @@
 
 			serviceOrder.forEach(function(id){
 				var service = getServiceById(id);
+				if(service == null)
+					return;
+
 				if(service.isEnabled)
 					enabledServices.appendChild(Q('#' + id));
 				else
