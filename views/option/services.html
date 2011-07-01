@@ -81,6 +81,10 @@
 			font-size: 12px;
 			color: #000;
 		}
+
+		#urlshortener-section, #urlshortener-section + ul { display: none; }
+		.urlshortener-enabled #urlshortener-section { display: -webkit-box; }
+		.urlshortener-enabled #urlshortener-section + ul { display: block; }
 	</style>
 </head>
 <body>
@@ -90,10 +94,28 @@
 	<h1>Disabled Services</h1>
 	<ul id="disabled-services" class="service-list"></ul>
 
+	<h1 id="urlshortener-section">Google URL Shortener</h1>
+	<ul>
+		<li><input type="checkbox" id="shorten-button-box">
+		<label for="shorten-button-box">enable "Shorten" button</label>
+		<span class="msg">saved</span>
+	</ul>
+
 	<script>
 		var backgroundPage = chrome.extension.getBackgroundPage();
 		var pref = backgroundPage.pref;
 		var services = backgroundPage.services;
+
+
+		if(pref.get('urlshortener-enabled'))
+			document.body.classList.add('urlshortener-enabled');
+
+		var shortenButtonBox = Q('#shorten-button-box');
+		shortenButtonBox.checked = pref.get('shorten-button-enabled');
+		shortenButtonBox.addEventListener('change', function(){
+			pref.set('shorten-button-enabled', this.checked);
+			onSaved(this);
+		}, false);
 
 
 		document.body.classList.add('columns-' + pref.get('columns'));
@@ -232,6 +254,9 @@
 			}else if(key === 'service-order'){
 				serviceOrder = value;
 				onServiceOrderChanged(true);
+			}else if(key === 'urlshortener-enabled'){
+				document.body.classList[
+					value? 'add': 'remove']('urlshortener-enabled');
 			}
 		});
 
