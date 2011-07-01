@@ -100,7 +100,9 @@
 
 	<h1 id="gmail-section">Gmail</h1>
 	<ul>
-		<li><label for="gmail-poll-interval-box">poll interval</label>
+		<li><input type="checkbox" id="gmail-poll-box">
+		<label for="gmail-poll-box">check unread count</label>
+		<label for="gmail-poll-interval-box">every</label>
 		<select id="gmail-poll-interval-box">
 			<option value="300000">5min
 			<option value="600000">10min
@@ -120,6 +122,11 @@
 		var services = backgroundPage.services;
 
 		bindClass({prefKey: 'gmail-enabled'});
+		bind({
+			box: Q('#gmail-poll-box'),
+			valueKey: 'checked',
+			prefKey: 'gmail-poll-enabled'
+		});
 		bind({
 			box: Q('#gmail-poll-interval-box'),
 			prefKey: 'gmail-poll-interval'

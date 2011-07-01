@@ -148,8 +148,14 @@ function Gmail(){
 		}
 	}.bind(this);
 	
-	this.onEnabled.push(startPolling);
-	this.onDisabled.push(stopPolling);
+	this.onEnabled.push(function(){
+		if(pref.get('gmail-poll-enabled'))
+			startPolling();
+	});
+
+	this.onDisabled.push(function(){
+		stopPolling();
+	});
 
 	pref.onPropertyChange.addListener(function(key, value){
 		if(!this.isEnabled)
@@ -158,6 +164,11 @@ function Gmail(){
 		if(key === 'gmail-poll-interval'){
 			stopPolling();
 			startPolling();
+		}else if(key === 'gmail-poll-enabled'){
+			if(value)
+				startPolling();
+			else
+				stopPolling();
 		}
 	}.bind(this));
 
@@ -166,6 +177,9 @@ function Gmail(){
 
 	// 未読チェックを開始
 	function startPolling(){
+		if(polling)
+			return;
+
 		checkUnreadCount();
 
 		var interval = Number(pref.get('gmail-poll-interval')) ||
@@ -178,6 +192,9 @@ function Gmail(){
 
 	// 未読チェックを終了
 	function stopPolling(){
+		if(!polling)
+			return;
+
 		// タブの監視を外す
 		chrome.tabs.onUpdated.removeListener(onTabUpdated);
 
