@@ -151,6 +151,27 @@
 				e.stopPropagation();
 			}, false);
 		});
+
+		$id('urlshortener-badge', function(badge){
+			if(!pref.get('shorten-button-enabled'))
+				return;
+			badge.textContent = showIconOnly? '+': 'Shorten';
+			badge.addEventListener('click', function(e){
+				e.stopPropagation();
+				chrome.tabs.getSelected(null, function(tab){
+					chrome.tabs.create({
+						url: 'http://goo.gl',
+						selected: true
+					}, function(newTab){
+						chrome.tabs.executeScript(newTab.id, {
+							code: 'document.querySelector("#shorten")' +
+								'.value ="' + tab.url + '";'
+						});
+						close();
+					});
+				});
+			});
+		});
 	</script>
 </body>
 </html>

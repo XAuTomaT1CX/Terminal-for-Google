@@ -3,39 +3,21 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="/styles/option.css">
-	<style>
-		span {
-			display: inline-block;
-			margin: 0 0.5em;
-			padding: 0 0.5em;
-			border-radius: 3px;
-			background: linear-gradient(top, #0C0, #0A0);
-			background: -webkit-linear-gradient(top, #2C2, #2A2);
-			color: #FFF;
-			text-shadow: -1px -1px 0 #2A2;
-			opacity: 0;
-			transition: opacity 0.1s;
-			-webkit-transition: opacity 0.1s;
-		}
-
-		span.saved {
-			opacity: 1;
-		}
-	</style>
+	<script src="/scripts/option.js"></script>
 </head>
 <body>
 	<h1>Security</h1>
 	<ul>
 		<li><input id="secure-box" type="checkbox" />
 		<label for="secure-box">use SSL (https://〜)</label>
-		<span id="secure-msg">saved</span>
+		<span class="msg">saved</span>
 	</ul>
 
 	<h1>Apperance</h1>
 	<ul>
 		<li><input id="icon-only-box" type="checkbox" />
 		<label for="icon-only-box">show icon only</label>
-		<span id="icon-only-msg">saved</span>
+		<span class="msg">saved</span>
 
 		<li><label for="columns-box">columns</label>
 		<select id="columns-box">
@@ -43,7 +25,7 @@
 			<option value="4">4</option>
 			<option value="5">5</option>
 		</select>
-		<span id="columns-msg">saved</span>
+		<span class="msg">saved</span>
 	</ul>
 
 	<script type="text/javascript">
@@ -55,9 +37,7 @@
 		secureBox.checked = pref.get('secure');
 		secureBox.addEventListener('change', function(){
 			pref.set('secure', secureBox.checked);
-
-			var msg = Q('#secure-msg');
-			onSaved(msg);
+			onSaved(this);
 		}, false);
 
 
@@ -65,9 +45,7 @@
 		iconOnlyBox.checked = pref.get('icon-only');
 		iconOnlyBox.addEventListener('change', function(){
 			pref.set('icon-only', iconOnlyBox.checked);
-
-			var msg = Q('#icon-only-msg');
-			onSaved(msg);
+			onSaved(this);
 		}, false);
 
 
@@ -75,32 +53,8 @@
 		columnsBox.value = pref.get('columns');
 		columnsBox.addEventListener('change', function(){
 			pref.set('columns', columnsBox.value);
-
-			var msg = Q('#columns-msg');
-			onSaved(msg);
+			onSaved(this);
 		}, false);
-
-
-		var timeouts = {};
-		function onSaved(msg){
-			if(msg.id in timeouts){
-				clearTimeout(timeouts[msg.id]);
-				msg.classList.remove('saved');
-				timeouts[msg.id] = setTimeout(function(){
-					setSaved();
-				}, 100);
-			}else{
-				setSaved();
-			}
-
-			function setSaved(){
-				msg.classList.add('saved');
-				timeouts[msg.id] = setTimeout(function(){
-					msg.classList.remove('saved');
-					delete timeouts[msg.id];
-				}, 1600);
-			}
-		}
 
 
 		window.addEventListener('pref-changed', function(event){
@@ -114,10 +68,6 @@
 				columnsBox.value = event.value;
 			}
 		});
-
-		function Q(selector){
-			return document.querySelector(selector);
-		}
 	</script>
 </body>
 </html>

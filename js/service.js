@@ -403,6 +403,10 @@ var serviceInfo = [{
 	name: 'Google Bookmarks',
 	url: 'http://www.google.com/bookmarks',
 	icon: 'image/goog-bookmarks.png'
+}, {
+	id: 'urlshortener',
+	name: 'Google URL Shortener',
+	url: 'http://goo.gl'
 }];
 
 var services;

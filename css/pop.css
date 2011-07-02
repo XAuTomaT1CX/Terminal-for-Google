@@ -124,7 +124,8 @@ body:not(.icon-only).columns-5 .icon:last-of-type:nth-of-type(5n),
 	border-color: rgb(0, 0, 96);
 }
 
-#appengine-badge {
+#appengine-badge,
+#urlshortener-badge {
 	background-color: #468;
 	border-color: #135;
 	left: 16px;
