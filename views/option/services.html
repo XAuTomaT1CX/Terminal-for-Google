@@ -105,9 +105,7 @@
 		var services = backgroundPage.services;
 
 
-		if(pref.get('urlshortener-enabled'))
-			document.body.classList.add('urlshortener-enabled');
-
+		bindClass({prefKey: 'urlshortener-enabled'});
 		bind({
 			box: Q('#shorten-button-box'),
 			valueKey: 'checked',
@@ -251,9 +249,6 @@
 			}else if(key === 'service-order'){
 				serviceOrder = value;
 				onServiceOrderChanged(true);
-			}else if(key === 'urlshortener-enabled'){
-				document.body.classList[
-					value? 'add': 'remove']('urlshortener-enabled');
 			}
 		});
 
