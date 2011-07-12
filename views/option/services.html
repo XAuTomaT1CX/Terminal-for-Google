@@ -82,6 +82,10 @@
 			color: #000;
 		}
 
+		#gmail-section, #gmail-section + ul { display: none; }
+		.gmail-enabled #gmail-section { display: -webkit-box; }
+		.gmail-enabled #gmail-section + ul { display: block; }
+
 		#urlshortener-section, #urlshortener-section + ul { display: none; }
 		.urlshortener-enabled #urlshortener-section { display: -webkit-box; }
 		.urlshortener-enabled #urlshortener-section + ul { display: block; }
@@ -94,6 +98,19 @@
 	<h1>Disabled Services</h1>
 	<ul id="disabled-services" class="service-list"></ul>
 
+	<h1 id="gmail-section">Gmail</h1>
+	<ul>
+		<li><input type="checkbox" id="gmail-poll-box">
+		<label for="gmail-poll-box">check unread count</label>
+		<label for="gmail-poll-interval-box">every</label>
+		<select id="gmail-poll-interval-box">
+			<option value="300000">5min
+			<option value="600000">10min
+			<option value="1800000">30min
+		</select>
+		<span class="msg">saved</span>
+	</ul>
+
 	<h1 id="urlshortener-section">Google URL Shortener</h1>
 	<ul>
 		<li><input type="checkbox" id="shorten-button-box">
@@ -102,20 +119,25 @@
 	</ul>
 
 	<script>
-		var backgroundPage = chrome.extension.getBackgroundPage();
-		var pref = backgroundPage.pref;
 		var services = backgroundPage.services;
 
+		bindClass({prefKey: 'gmail-enabled'});
+		bind({
+			box: Q('#gmail-poll-box'),
+			valueKey: 'checked',
+			prefKey: 'gmail-poll-enabled'
+		});
+		bind({
+			box: Q('#gmail-poll-interval-box'),
+			prefKey: 'gmail-poll-interval'
+		});
 
-		if(pref.get('urlshortener-enabled'))
-			document.body.classList.add('urlshortener-enabled');
-
-		var shortenButtonBox = Q('#shorten-button-box');
-		shortenButtonBox.checked = pref.get('shorten-button-enabled');
-		shortenButtonBox.addEventListener('change', function(){
-			pref.set('shorten-button-enabled', this.checked);
-			onSaved(this);
-		}, false);
+		bindClass({prefKey: 'urlshortener-enabled'});
+		bind({
+			box: Q('#shorten-button-box'),
+			valueKey: 'checked',
+			prefKey: 'shorten-button-enabled'
+		});
 
 
 		document.body.classList.add('columns-' + pref.get('columns'));
@@ -254,9 +276,6 @@
 			}else if(key === 'service-order'){
 				serviceOrder = value;
 				onServiceOrderChanged(true);
-			}else if(key === 'urlshortener-enabled'){
-				document.body.classList[
-					value? 'add': 'remove']('urlshortener-enabled');
 			}
 		});
 

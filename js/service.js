@@ -102,8 +102,6 @@ Object.defineProperties(Service.prototype, {
 
 
 function Gmail(){
-	var polling = null, pollInterval = 1000 * 60 * 5;
-	
 	// フィードURL
 	var feed = (pref.get('secure')? "https://": "http://") +
 		"mail.google.com/mail/feed/atom";
@@ -151,25 +149,61 @@ function Gmail(){
 	}.bind(this);
 	
 	this.onEnabled.push(function(){
+		if(pref.get('gmail-poll-enabled'))
+			startPolling();
+	});
+
+	this.onDisabled.push(function(){
+		stopPolling();
+	});
+
+	pref.onPropertyChange.addListener(function(key, value){
+		if(!this.isEnabled)
+			return;
+
+		if(key === 'gmail-poll-interval'){
+			stopPolling();
+			startPolling();
+		}else if(key === 'gmail-poll-enabled'){
+			if(value)
+				startPolling();
+			else
+				stopPolling();
+		}
+	}.bind(this));
+
+
+	var polling = null;
+
+	// 未読チェックを開始
+	function startPolling(){
+		if(polling)
+			return;
+
 		checkUnreadCount();
-		
-		// 未読チェックを開始
-		polling = setInterval(checkUnreadCount, pollInterval);
-		
+
+		var interval = Number(pref.get('gmail-poll-interval')) ||
+			1000 * 60 * 5;
+		polling = setInterval(checkUnreadCount, interval);
+
 		// タブを監視する
 		chrome.tabs.onUpdated.addListener(onTabUpdated);
-	});
-	
-	this.onDisabled.push(function(){
-		badge.gmail = null;
-		
-		// 未読チェックを終了
-		clearInterval(polling);
-		polling = null;
-		
+	}
+
+	// 未読チェックを終了
+	function stopPolling(){
+		if(!polling)
+			return;
+
 		// タブの監視を外す
 		chrome.tabs.onUpdated.removeListener(onTabUpdated);
-	});
+
+		clearInterval(polling);
+		polling = null;
+
+		// バッジを非表示に
+		badge.gmail = null;
+	}
 }
 
 
