@@ -102,20 +102,17 @@
 	</ul>
 
 	<script>
-		var backgroundPage = chrome.extension.getBackgroundPage();
-		var pref = backgroundPage.pref;
 		var services = backgroundPage.services;
 
 
 		if(pref.get('urlshortener-enabled'))
 			document.body.classList.add('urlshortener-enabled');
 
-		var shortenButtonBox = Q('#shorten-button-box');
-		shortenButtonBox.checked = pref.get('shorten-button-enabled');
-		shortenButtonBox.addEventListener('change', function(){
-			pref.set('shorten-button-enabled', this.checked);
-			onSaved(this);
-		}, false);
+		bind({
+			box: Q('#shorten-button-box'),
+			valueKey: 'checked',
+			prefKey: 'shorten-button-enabled'
+		});
 
 
 		document.body.classList.add('columns-' + pref.get('columns'));
