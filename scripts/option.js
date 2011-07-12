@@ -1,4 +1,52 @@
 
+var backgroundPage = chrome.extension.getBackgroundPage();
+var pref = backgroundPage.pref;
+
+
+window.addEventListener('pref-changed', function(event){
+	var listener;
+
+	if(listener = bind.listeners[event.key])
+		listener(event.value);
+
+	if(listener = bindClass.listeners[event.key])
+		listener(event.value);
+});
+
+bind.listeners = {};
+function bind(args){
+	var valueKey = args.valueKey || 'value';
+	var prefKey = args.prefKey;
+	var box = args.box;
+
+	box[valueKey] = pref.get(prefKey);
+	box.addEventListener('change', function(){
+		pref.set(prefKey, this[valueKey]);
+		onSaved(this);
+	}, false);
+
+	bind.listeners[prefKey] = function(value){
+		if(box[valueKey] !== value)
+			box[valueKey] = value;
+	};
+}
+
+bindClass.listeners = {};
+function bindClass(args){
+	var prefKey = args.prefKey;
+	var className = args.className || prefKey;
+
+	if(pref.get(prefKey))
+		document.body.classList.add(className);
+
+	bindClass.listeners[prefKey] = function(value){
+		if(value)
+			document.body.classList.add(className);
+		else
+			document.body.classList.remove(className);
+	}
+}
+
 onSaved.timeouts = {};
 function onSaved(node){
 	var msg = node.nextElementSibling;

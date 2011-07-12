@@ -28,45 +28,22 @@
 		<span class="msg">saved</span>
 	</ul>
 
-	<script type="text/javascript">
-		var backgroundPage = chrome.extension.getBackgroundPage();
-		var pref = backgroundPage.pref;
+	<script>
+		bind({
+			box: Q('#secure-box'),
+			valueKey: 'checked',
+			prefKey: 'secure'
+		});
 
+		bind({
+			box: Q('#icon-only-box'),
+			valueKey: 'checked',
+			prefKey: 'icon-only'
+		});
 
-		var secureBox = Q('#secure-box');
-		secureBox.checked = pref.get('secure');
-		secureBox.addEventListener('change', function(){
-			pref.set('secure', secureBox.checked);
-			onSaved(this);
-		}, false);
-
-
-		var iconOnlyBox = Q('#icon-only-box')
-		iconOnlyBox.checked = pref.get('icon-only');
-		iconOnlyBox.addEventListener('change', function(){
-			pref.set('icon-only', iconOnlyBox.checked);
-			onSaved(this);
-		}, false);
-
-
-		var columnsBox = Q('#columns-box');
-		columnsBox.value = pref.get('columns');
-		columnsBox.addEventListener('change', function(){
-			pref.set('columns', columnsBox.value);
-			onSaved(this);
-		}, false);
-
-
-		window.addEventListener('pref-changed', function(event){
-			var key = event.key, value = event.value;
-
-			if(key === 'secure' && secureBox.checked !== value){
-				secureBox.checked = event.value;
-			}else if(key === 'icon-only' && iconOnlyBox.checked !== value){
-				iconOnlyBox.checked = event.value;
-			}else if(key === 'columns' && columnsBox.value != value){
-				columnsBox.value = event.value;
-			}
+		bind({
+			box: Q('#columns-box'),
+			prefValue: 'columns'
 		});
 	</script>
 </body>
