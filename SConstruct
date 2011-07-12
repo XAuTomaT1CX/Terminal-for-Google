@@ -23,8 +23,9 @@ class Query:
 
 gitLsFiles = subprocess.Popen(['git', 'ls-files'], stdout=subprocess.PIPE)
 files = (Query(gitLsFiles.stdout)
+	.select(lambda fn: fn.strip())
 	.where(lambda fn: fn[0] != '.')
-	.select(lambda fn: fn.strip()))
+	.where(lambda fn: fn != 'SConstruct'))
 
 Command('a.zip', files.tolist(), 'zip $TARGET $SOURCES')
 
