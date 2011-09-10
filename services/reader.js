@@ -15,20 +15,33 @@ function GoogleReader(){
 		_unreadCount: {
 			writable: true,
 			value: 0
+		},
+		_tabUpdateHandler: {
+			value: function(id, info, tab){
+				if(!tab.url)
+					return;
+
+				// もしタブのURLがGoogle Readerならば未読チェック
+				if(tab.url.indexOf('http://' + this.url) === 0 ||
+					tab.url.indexOf('https://' + this.url) === 0){
+					this.checkUnreadCount();
+				}
+			}.bind(this)
 		}
 	});
 
 	// Google Readerが有効にされたとき
 	this.onEnabled.push(function(){
-		// 未読をチェック
-		this.checkUnreadCount();
+		if(pref.get('reader-poll-enabled')){
+			// 未読をチェック
+			this.checkUnreadCount();
 
-		// 定期的に未読をチェックするようにする
-		this.startPolling();
+			// 定期的に未読をチェックするようにする
+			this.startPolling();
 
-		// タブを監視する
-		if(!chrome.tabs.onUpdated.hasListener(tabUpdateHandler))
-			chrome.tabs.onUpdated.addListener(tabUpdateHandler);
+			// タブを監視する
+			this.startObservingTab();
+		}
 	});
 
 	// Google Readerが無効にされたとき
@@ -39,21 +52,29 @@ function GoogleReader(){
 		this.stopPolling();
 
 		// タブの監視をはずす
-		if(chrome.tabs.onUpdated.hasListener(tabUpdateHandler))
-			chrome.tabs.onUpdated.removeListener(tabUpdateHandler)
+		this.stopObservingTab();
 	});
 
-	// タブがアップデートされたとき
-	function tabUpdateHandler(tabId, changeInfo, tab){
-		if(!tab.url)
+	// 設定が変更されたとき
+	pref.onPropertyChange.addListener(function(key, value){
+		if(!this.isEnabled)
 			return;
 
-		// もしタブのURLがGoogle Readerならば未読チェック
-		if(tab.url.indexOf('http://' + this.url) === 0 ||
-			tab.url.indexOf('https://' + this.url) === 0){
-			this.checkUnreadCount();
+		if(key === 'reader-poll-interval'){
+			this.stopPolling();
+			this.startPolling();
+		}else if(key === 'reader-poll-enabled'){
+			this.unreadCount = 0;
+			if(value){
+				this.checkUnreadCount();
+				this.startPolling();
+				this.startObservingTab();
+			}else{
+				this.stopPolling();
+				this.stopObservingTab();
+			}
 		}
-	}
+	}.bind(this));
 }
 
 
@@ -77,7 +98,12 @@ Object.defineProperties(GoogleReader.prototype, {
 	},
 	/** 未読数を調べに行く頻度(ms) */
 	pollInterval: {
-		value: 1000 * 60 * 5
+		get: function(){
+			var pollInterval = pref.get('reader-poll-interval');
+			if(!isFinite(pollInterval))
+				pollInterval = pref.set('reader-poll-interval', 1000 * 60 * 5);
+			return pollInterval;
+		}
 	},
 	/** 未読数を調べる */
 	checkUnreadCount: {
@@ -143,6 +169,22 @@ Object.defineProperties(GoogleReader.prototype, {
 				clearInterval(this._polling);
 				this._polling = null;
 			}
+		}
+	},
+	/** タブの監視を開始 */
+	startObservingTab: {
+		value: function(){
+			var handler = this._tabUpdateHandler;
+			if(!chrome.tabs.onUpdated.hasListener(handler))
+				chrome.tabs.onUpdated.addListener(handler);
+		}
+	},
+	/** タブの監視を中止 */
+	stopObservingTab: {
+		value: function(){
+			var handler = this._tabUpdateHandler;
+			if(chrome.tabs.onUpdated.hasListener(handler))
+				chrome.tabs.onUpdated.removeListener(handler)
 		}
 	}
 });

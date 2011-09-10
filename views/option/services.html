@@ -86,6 +86,10 @@
 		.gmail-enabled #gmail-section { display: -webkit-box; }
 		.gmail-enabled #gmail-section + ul { display: block; }
 
+		#reader-section, #reader-section + ul { display: none; }
+		.reader-enabled #reader-section { display: -webkit-box; }
+		.reader-enabled #reader-section + ul { display: block; }
+
 		#urlshortener-section, #urlshortener-section + ul { display: none; }
 		.urlshortener-enabled #urlshortener-section { display: -webkit-box; }
 		.urlshortener-enabled #urlshortener-section + ul { display: block; }
@@ -104,6 +108,19 @@
 		<label for="gmail-poll-box">check unread count</label>
 		<label for="gmail-poll-interval-box">every</label>
 		<select id="gmail-poll-interval-box">
+			<option value="300000">5min
+			<option value="600000">10min
+			<option value="1800000">30min
+		</select>
+		<span class="msg">saved</span>
+	</ul>
+
+	<h1 id="reader-section">Google Reader</h1>
+	<ul>
+		<li><input type="checkbox" id="reader-poll-box">
+		<label for="reader-poll-box">check unread count</label>
+		<label for="reader-poll-interval-box">every</label>
+		<select id="reader-poll-interval-box">
 			<option value="300000">5min
 			<option value="600000">10min
 			<option value="1800000">30min
@@ -130,6 +147,17 @@
 		bind({
 			box: Q('#gmail-poll-interval-box'),
 			prefKey: 'gmail-poll-interval'
+		});
+
+		bindClass({prefKey: 'reader-enabled'});
+		bind({
+			box: Q('#reader-poll-box'),
+			valueKey: 'checked',
+			prefKey: 'reader-poll-enabled'
+		});
+		bind({
+			box: Q('#reader-poll-interval-box'),
+			prefKey: 'reader-poll-interval'
 		});
 
 		bindClass({prefKey: 'urlshortener-enabled'});
