@@ -249,6 +249,11 @@ var serviceInfo = [{
 	name: 'Knol',
 	url: 'http://knol.google.com/k',
 	icon: 'image/goog-knol.png'
+}, {
+	id: 'finance',
+	name: 'Google finance',
+	url: 'www.google.com/finance',
+	icon: 'image/goog-finance-g.png'
 }];
 
 var services;
