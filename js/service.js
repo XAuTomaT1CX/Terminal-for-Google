@@ -13,10 +13,6 @@ function Service(args){
 		menuIds: {value: [], writable: true}
 	});
 	
-	if(args.id === 'gmail'){
-		Gmail.call(this);
-	}
-	
 	if(pref.get(args.id + '-enabled', true)){
 		var channel = new MessageChannel();
 		channel.port1.postMessage(0);
@@ -103,130 +99,8 @@ Object.defineProperties(Service.prototype, {
 });
 
 
-function Gmail(){
-	// フィードURL
-	var feed = (pref.get('secure')? "https://": "http://") +
-		"mail.google.com/mail/feed/atom";
-	
-	// XMLネームスペース
-	var path = '/gmail:feed/gmail:fullcount';
-	var ns = function(prefix){
-		if(prefix == 'gmail'){
-			return 'http://purl.org/atom/ns#';
-		}
-	};
-	
-	var checkUnreadCount = function(){
-		httpRequest({
-			url: feed,
-			responseType: 'xml',
-			onSuccess: function(xml, xhr){
-				var node = xml.evaluate(path, xml, ns, XPathResult.ANY_TYPE, null).iterateNext();
-				
-				if(node){
-					badge.gmail = node.textContent;
-				}else{
-					console.error('Gmail XML Error', xml);
-				}
-			},
-			onError: function(e){
-				badge.gmail = 0;
-				console.error('Gmail', e);
-			}
-		});
-	}.bind(this);
-	
-	// サービスのページが開かれたら未読チェック
-	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure');
-		if(this.urlContainsScheme){
-			url = this.url;
-		}else{
-			url = (secure? 'https://': 'http://') + this.url;
-		}
-		
-		if(tab.url && tab.url.indexOf(url) === 0){
-			checkUnreadCount();
-		}
-	}.bind(this);
-	
-	this.onEnabled.push(function(){
-		if(pref.get('gmail-poll-enabled'))
-			startPolling();
-	});
-
-	this.onDisabled.push(function(){
-		stopPolling();
-	});
-
-	pref.onPropertyChange.addListener(function(key, value){
-		if(!this.isEnabled)
-			return;
-
-		if(key === 'gmail-poll-interval'){
-			stopPolling();
-			startPolling();
-		}else if(key === 'gmail-poll-enabled'){
-			if(value)
-				startPolling();
-			else
-				stopPolling();
-		}
-	}.bind(this));
-
-
-	var polling = null;
-
-	// 未読チェックを開始
-	function startPolling(){
-		if(polling)
-			return;
-
-		checkUnreadCount();
-
-		var interval = Number(pref.get('gmail-poll-interval')) ||
-			1000 * 60 * 5;
-		polling = setInterval(checkUnreadCount, interval);
-
-		// タブを監視する
-		chrome.tabs.onUpdated.addListener(onTabUpdated);
-	}
-
-	// 未読チェックを終了
-	function stopPolling(){
-		if(!polling)
-			return;
-
-		// タブの監視を外す
-		chrome.tabs.onUpdated.removeListener(onTabUpdated);
-
-		clearInterval(polling);
-		polling = null;
-
-		// バッジを非表示に
-		badge.gmail = null;
-	}
-}
-
-
 var serviceInfo = [{
-	id: 'gmail',
-	name: 'Gmail',
-	url: 'mail.google.com/mail',
-	icon: 'image/goog-mail.png',
-	menus: [{
-		title: 'Mail This Page',
-		context: 'page',
-		action: 'gmail'
-	}, {
-		title: 'Mail This Link',
-		context: 'link',
-		action: 'gmail'
-	}, {
-		title: 'Mail This Text',
-		context: 'selection',
-		action: 'gmail'
-	}]
+	id: 'gmail'
 }, {
 	id: 'calendar',
 	name: 'Google Calendar',
@@ -375,7 +249,9 @@ var serviceInfo = [{
 var services;
 function initialize(){
 	services = serviceInfo.map(function(args){
-		if(args.id === 'reader'){
+		if(args.id === 'gmail'){
+			return new Gmail();
+		}else if(args.id === 'reader'){
 			return new GoogleReader();
 		}else{
 			return new Service(args);
