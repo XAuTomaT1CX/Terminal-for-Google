@@ -254,6 +254,11 @@ var serviceInfo = [{
 	name: 'Google finance',
 	url: 'www.google.com/finance',
 	icon: 'image/goog-finance-g.png'
+}, {
+	id: 'moderator',
+	name: 'Google Moderator',
+	url: 'www.google.com/moderator',
+	icon: 'image/goog-moderator.png'
 }];
 
 var services;
