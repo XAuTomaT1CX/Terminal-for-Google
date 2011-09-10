@@ -259,6 +259,11 @@ var serviceInfo = [{
 	name: 'Google Moderator',
 	url: 'www.google.com/moderator',
 	icon: 'image/goog-moderator.png'
+}, {
+	id: 'books',
+	name: 'Google Books',
+	url: 'http://books.google.com',
+	icon: 'image/goog-books.png'
 }];
 
 var services;
