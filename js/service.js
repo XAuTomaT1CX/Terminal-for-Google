@@ -15,12 +15,14 @@ function Service(args){
 	
 	if(args.id === 'gmail'){
 		Gmail.call(this);
-	}else if(args.id === 'reader'){
-		GoogleReader.call(this);
 	}
 	
 	if(pref.get(args.id + '-enabled', true)){
-		this.enable();
+		var channel = new MessageChannel();
+		channel.port1.postMessage(0);
+		channel.port2.onmessage = function(){
+			this.enable();
+		}.bind(this);
 	}
 	
 	// コンテキストメニューを削除
@@ -207,81 +209,6 @@ function Gmail(){
 }
 
 
-function GoogleReader(){
-	var polling = null, pollInterval = 1000 * 60 * 5;
-	
-	// JSON URL
-	var json = (pref.get('secure')? "https://": "http://") +
-		"www.google.com/reader/api/0/unread-count?output=json";
-	
-	var checkUnreadCount = function(){
-		httpRequest({
-			url: json,
-			responseType: 'json',
-			onSuccess: function(json, xhr){
-				var links = json.unreadcounts, value = 0, i;
-				
-				for(i in links){
-					if(links[i].id.indexOf("reading-list") >= 0){
-						value = links[i].count.toString();
-						break;
-					}
-				}
-				
-				badge.reader = value;
-			},
-			onError: function(e){
-				badge.reader = 0;
-				console.error('Google Reader', e);
-			}
-		});
-	}.bind(this);
-	
-	// サービスのページが開かれたら未読チェック
-	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure');
-		if(this.urlContainsScheme){
-			url = this.url;
-		}else{
-			url = (secure? 'https://': 'http://') + this.url;
-		}
-		
-		if(tab.url && tab.url.indexOf(url) === 0){
-			checkUnreadCount();
-		}
-	}.bind(this);
-	
-	this.onEnabled.push(function(){
-		checkUnreadCount();
-		
-		// 未読チェックを開始
-		polling = setInterval(function(){
-			checkUnreadCount();
-		}, pollInterval);
-		
-		// タブを監視する
-		if(!chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.addListener(onTabUpdated);
-		}
-	});
-	
-	this.onDisabled.push(function(){
-		badge.reader = null;
-		
-		// 未読チェックを終了
-		if(polling){
-			clearInterval(polling);
-			polling = null;
-		}
-		
-		// タブの監視を外す
-		if(chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.removeListener(onTabUpdated)
-		}
-	});
-}
-
-
 var serviceInfo = [{
 	id: 'gmail',
 	name: 'Gmail',
@@ -306,10 +233,7 @@ var serviceInfo = [{
 	url: 'www.google.com/calendar',
 	icon: 'image/goog-cal.png'
 }, {
-	id: 'reader',
-	name: 'Google Reader',
-	url: 'www.google.com/reader',
-	icon: 'image/goog-reader.png'
+	id: 'reader'
 }, {
 	id: 'contacts',
 	name: 'Contacts',
@@ -451,6 +375,10 @@ var serviceInfo = [{
 var services;
 function initialize(){
 	services = serviceInfo.map(function(args){
-		return new Service(args);
+		if(args.id === 'reader'){
+			return new GoogleReader();
+		}else{
+			return new Service(args);
+		}
 	});
 }
