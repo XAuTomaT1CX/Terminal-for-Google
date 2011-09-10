@@ -441,6 +441,11 @@ var serviceInfo = [{
 	id: 'urlshortener',
 	name: 'Google URL Shortener',
 	url: 'http://goo.gl'
+}, {
+	id: 'music',
+	name: 'music beta',
+	url: 'music.google.com/music/',
+	icon: 'image/goog-music-o.png'
 }];
 
 var services;
