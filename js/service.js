@@ -244,6 +244,11 @@ var serviceInfo = [{
 	name: 'music beta',
 	url: 'music.google.com/music/',
 	icon: 'image/goog-music-o.png'
+}, {
+	id: 'knol',
+	name: 'Knol',
+	url: 'http://knol.google.com/k',
+	icon: 'image/goog-knol.png'
 }];
 
 var services;
