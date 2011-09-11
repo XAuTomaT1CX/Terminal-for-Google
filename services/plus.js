@@ -32,14 +32,16 @@ function GooglePlus(){
 
 	// Google Plusが有効にされたとき
 	this.onEnabled.push(function(){
-		// 未読をチェック
-		this.checkUnreadCount();
+		if(pref.get('plus-poll-enabled')){
+			// 未読をチェック
+			this.checkUnreadCount();
 
-		// 定期的に未読をチェックするようにする
-		this.startPolling();
+			// 定期的に未読をチェックするようにする
+			this.startPolling();
 
-		// タブを監視する
-		this.startObservingTab();
+			// タブを監視する
+			this.startObservingTab();
+		}
 	});
 
 	// Google Plusが無効にされたとき
@@ -52,6 +54,27 @@ function GooglePlus(){
 		// タブの監視をはずす
 		this.stopObservingTab();
 	});
+
+	// 設定が変更されたとき
+	pref.onPropertyChange.addListener(function(key, value){
+		if(!this.isEnabled)
+			return;
+
+		if(key === 'plus-poll-interval'){
+			this.stopPolling();
+			this.startPolling();
+		}else if(key === 'plus-poll-enabled'){
+			this.unreadCount = 0;
+			if(value){
+				this.checkUnreadCount();
+				this.startPolling();
+				this.startObservingTab();
+			}else{
+				this.stopPolling();
+				this.stopObservingTab();
+			}
+		}
+	}.bind(this));
 }
 
 
@@ -75,7 +98,12 @@ Object.defineProperties(GooglePlus.prototype, {
 	},
 	/** 未読数を調べに行く頻度(ms) */
 	pollInterval: {
-		value: 1000 * 60 * 5
+		get: function(){
+			var pollInterval = pref.get('plus-poll-interval');
+			if(!isFinite(pollInterval))
+				pollInterval = pref.set('plus-poll-interval', 1000 * 60 * 5);
+			return pollInterval;
+		}
 	},
 	/** 未読数を調べる */
 	checkUnreadCount: {
