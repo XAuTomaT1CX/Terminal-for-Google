@@ -124,6 +124,12 @@ body:not(.icon-only).columns-5 .icon:last-of-type:nth-of-type(5n),
 	border-color: rgb(0, 0, 96);
 }
 
+#plus-badge {
+	background: rgb(255, 8, 8);
+	border-color: rgb(128, 8, 8);
+	opacity: 0.9;
+}
+
 #appengine-badge,
 #urlshortener-badge {
 	background-color: #468;

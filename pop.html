@@ -137,6 +137,14 @@
 					readerBadge.textContent = badge.reader || '';
 				}
 			});
+
+			$id('plus-badge', function(b){
+				if(showIconOnly && parseInt(badge.plus) > 99){
+					b.textContent = '!';
+				}else{
+					b.textContent = badge.plus || '';
+				}
+			});
 		}
 		
 		setBadge();

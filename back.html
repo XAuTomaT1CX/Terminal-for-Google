@@ -56,6 +56,7 @@
 		},
 		_gmail: null,
 		_reader: null,
+		_plus: null,
 		setColor: function(r, g, b, a){
 			chrome.browserAction.setBadgeBackgroundColor({
 				color: [
@@ -83,6 +84,20 @@
 				b += 208;
 				text = text? '!': this._reader;
 			}
+
+			if(this._plus){
+				r += 255;
+				g += 8;
+				b += 8;
+				text = text? '!': this._plus;
+			}
+
+			if(r > 255)
+				r = 255;
+			if(g > 255)
+				g = 255;
+			if(b > 255)
+				b = 255;
 			
 			this.setColor(r, g, b, 255);
 			this.setText(text);
@@ -103,6 +118,13 @@
 		},
 		set reader(value){
 			this._reader = (value == 0 || value == null)? null: String(value);
+			this.refresh();
+		},
+		get plus(){
+			return this._plus;
+		},
+		set plus(value){
+			this._plus = (value == 0 || value == null)? null: String(value);
 			this.refresh();
 		}
 	};
