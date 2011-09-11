@@ -5,6 +5,8 @@
 <meta charset="utf-8"/>
 <script src="js/http.js"></script>
 <script src="js/service.js"></script>
+<script src="services/gmail.js"></script>
+<script src="services/reader.js"></script>
 <script src="js/pref.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
@@ -25,8 +27,16 @@
 	pref.setDefault('bookmarks-enabled', false);
 	pref.setDefault('gmail-poll-interval', 1000 * 60 * 5);
 	pref.setDefault('gmail-poll-enabled', true);
+	pref.setDefault('reader-poll-interval', 1000 * 60 * 5);
+	pref.setDefault('reader-poll-enabled', true);
 	pref.setDefault('urlshortener-enabled', false);
 	pref.setDefault('shorten-button-enabled', true);
+	pref.setDefault('music-enabled', false);
+	pref.setDefault('knol-enabled', false);
+	pref.setDefault('finance-enabled', false);
+	pref.setDefault('moderator-enabled', false);
+	pref.setDefault('books-enabled', false);
+	pref.setDefault('webstore-enabled', false);
 	
 	var badge = {
 		_listener: [],

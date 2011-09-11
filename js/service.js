@@ -13,14 +13,12 @@ function Service(args){
 		menuIds: {value: [], writable: true}
 	});
 	
-	if(args.id === 'gmail'){
-		Gmail.call(this);
-	}else if(args.id === 'reader'){
-		GoogleReader.call(this);
-	}
-	
 	if(pref.get(args.id + '-enabled', true)){
-		this.enable();
+		var channel = new MessageChannel();
+		channel.port1.postMessage(0);
+		channel.port2.onmessage = function(){
+			this.enable();
+		}.bind(this);
 	}
 	
 	// コンテキストメニューを削除
@@ -101,215 +99,15 @@ Object.defineProperties(Service.prototype, {
 });
 
 
-function Gmail(){
-	// フィードURL
-	var feed = (pref.get('secure')? "https://": "http://") +
-		"mail.google.com/mail/feed/atom";
-	
-	// XMLネームスペース
-	var path = '/gmail:feed/gmail:fullcount';
-	var ns = function(prefix){
-		if(prefix == 'gmail'){
-			return 'http://purl.org/atom/ns#';
-		}
-	};
-	
-	var checkUnreadCount = function(){
-		httpRequest({
-			url: feed,
-			responseType: 'xml',
-			onSuccess: function(xml, xhr){
-				var node = xml.evaluate(path, xml, ns, XPathResult.ANY_TYPE, null).iterateNext();
-				
-				if(node){
-					badge.gmail = node.textContent;
-				}else{
-					console.error('Gmail XML Error', xml);
-				}
-			},
-			onError: function(e){
-				badge.gmail = 0;
-				console.error('Gmail', e);
-			}
-		});
-	}.bind(this);
-	
-	// サービスのページが開かれたら未読チェック
-	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure');
-		if(this.urlContainsScheme){
-			url = this.url;
-		}else{
-			url = (secure? 'https://': 'http://') + this.url;
-		}
-		
-		if(tab.url && tab.url.indexOf(url) === 0){
-			checkUnreadCount();
-		}
-	}.bind(this);
-	
-	this.onEnabled.push(function(){
-		if(pref.get('gmail-poll-enabled'))
-			startPolling();
-	});
-
-	this.onDisabled.push(function(){
-		stopPolling();
-	});
-
-	pref.onPropertyChange.addListener(function(key, value){
-		if(!this.isEnabled)
-			return;
-
-		if(key === 'gmail-poll-interval'){
-			stopPolling();
-			startPolling();
-		}else if(key === 'gmail-poll-enabled'){
-			if(value)
-				startPolling();
-			else
-				stopPolling();
-		}
-	}.bind(this));
-
-
-	var polling = null;
-
-	// 未読チェックを開始
-	function startPolling(){
-		if(polling)
-			return;
-
-		checkUnreadCount();
-
-		var interval = Number(pref.get('gmail-poll-interval')) ||
-			1000 * 60 * 5;
-		polling = setInterval(checkUnreadCount, interval);
-
-		// タブを監視する
-		chrome.tabs.onUpdated.addListener(onTabUpdated);
-	}
-
-	// 未読チェックを終了
-	function stopPolling(){
-		if(!polling)
-			return;
-
-		// タブの監視を外す
-		chrome.tabs.onUpdated.removeListener(onTabUpdated);
-
-		clearInterval(polling);
-		polling = null;
-
-		// バッジを非表示に
-		badge.gmail = null;
-	}
-}
-
-
-function GoogleReader(){
-	var polling = null, pollInterval = 1000 * 60 * 5;
-	
-	// JSON URL
-	var json = (pref.get('secure')? "https://": "http://") +
-		"www.google.com/reader/api/0/unread-count?output=json";
-	
-	var checkUnreadCount = function(){
-		httpRequest({
-			url: json,
-			responseType: 'json',
-			onSuccess: function(json, xhr){
-				var links = json.unreadcounts, value = 0, i;
-				
-				for(i in links){
-					if(links[i].id.indexOf("reading-list") >= 0){
-						value = links[i].count.toString();
-						break;
-					}
-				}
-				
-				badge.reader = value;
-			},
-			onError: function(e){
-				badge.reader = 0;
-				console.error('Google Reader', e);
-			}
-		});
-	}.bind(this);
-	
-	// サービスのページが開かれたら未読チェック
-	var onTabUpdated = function(tabId, changeInfo, tab){
-		var url, secure = pref.get('secure');
-		if(this.urlContainsScheme){
-			url = this.url;
-		}else{
-			url = (secure? 'https://': 'http://') + this.url;
-		}
-		
-		if(tab.url && tab.url.indexOf(url) === 0){
-			checkUnreadCount();
-		}
-	}.bind(this);
-	
-	this.onEnabled.push(function(){
-		checkUnreadCount();
-		
-		// 未読チェックを開始
-		polling = setInterval(function(){
-			checkUnreadCount();
-		}, pollInterval);
-		
-		// タブを監視する
-		if(!chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.addListener(onTabUpdated);
-		}
-	});
-	
-	this.onDisabled.push(function(){
-		badge.reader = null;
-		
-		// 未読チェックを終了
-		if(polling){
-			clearInterval(polling);
-			polling = null;
-		}
-		
-		// タブの監視を外す
-		if(chrome.tabs.onUpdated.hasListener(onTabUpdated)){
-			chrome.tabs.onUpdated.removeListener(onTabUpdated)
-		}
-	});
-}
-
-
 var serviceInfo = [{
-	id: 'gmail',
-	name: 'Gmail',
-	url: 'mail.google.com/mail',
-	icon: 'image/goog-mail.png',
-	menus: [{
-		title: 'Mail This Page',
-		context: 'page',
-		action: 'gmail'
-	}, {
-		title: 'Mail This Link',
-		context: 'link',
-		action: 'gmail'
-	}, {
-		title: 'Mail This Text',
-		context: 'selection',
-		action: 'gmail'
-	}]
+	id: 'gmail'
 }, {
 	id: 'calendar',
 	name: 'Google Calendar',
 	url: 'www.google.com/calendar',
 	icon: 'image/goog-cal.png'
 }, {
-	id: 'reader',
-	name: 'Google Reader',
-	url: 'www.google.com/reader',
-	icon: 'image/goog-reader.png'
+	id: 'reader'
 }, {
 	id: 'contacts',
 	name: 'Contacts',
@@ -441,11 +239,46 @@ var serviceInfo = [{
 	id: 'urlshortener',
 	name: 'Google URL Shortener',
 	url: 'http://goo.gl'
+}, {
+	id: 'music',
+	name: 'music beta',
+	url: 'music.google.com/music/',
+	icon: 'image/goog-music-o.png'
+}, {
+	id: 'knol',
+	name: 'Knol',
+	url: 'http://knol.google.com/k',
+	icon: 'image/goog-knol.png'
+}, {
+	id: 'finance',
+	name: 'Google finance',
+	url: 'www.google.com/finance',
+	icon: 'image/goog-finance-g.png'
+}, {
+	id: 'moderator',
+	name: 'Google Moderator',
+	url: 'www.google.com/moderator',
+	icon: 'image/goog-moderator.png'
+}, {
+	id: 'books',
+	name: 'Google Books',
+	url: 'http://books.google.com',
+	icon: 'image/goog-books.png'
+}, {
+	id: 'webstore',
+	name: 'Chrome Web\xA0Store',
+	url: 'https://chrome.google.com/webstore'
 }];
 
 var services;
 function initialize(){
 	services = serviceInfo.map(function(args){
-		return new Service(args);
+		if(args.id === 'gmail'){
+			return new Gmail();
+		}else if(args.id === 'reader'){
+			return new GoogleReader();
+		}else{
+			return new Service(args);
+		}
 	});
 }
