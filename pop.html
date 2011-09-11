@@ -164,8 +164,18 @@
 						selected: true
 					}, function(newTab){
 						chrome.tabs.executeScript(newTab.id, {
-							code: 'document.querySelector("#shorten")' +
-								'.value ="' + tab.url + '";'
+							code: 'void ' + function(){
+								if(window.document &&
+									document.readyState === 'complete'){
+									a();
+								}else{
+									window.addEventListener('load', a);
+								}
+								function a(){
+									document.querySelector('#shorten').value =
+										"%TAB_URL%";
+								}
+							}.toString().replace('%TAB_URL%', tab.url) + '()'
 						});
 						close();
 					});
