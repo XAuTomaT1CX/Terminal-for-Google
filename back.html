@@ -6,6 +6,7 @@
 <script src="js/service.js"></script>
 <script src="services/gmail.js"></script>
 <script src="services/reader.js"></script>
+<script src="services/plus.js"></script>
 <script src="js/pref.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
@@ -36,6 +37,7 @@
 	pref.setDefault('moderator-enabled', false);
 	pref.setDefault('books-enabled', false);
 	pref.setDefault('webstore-enabled', false);
+	pref.setDefault('plus-enabled', false);
 	
 	var badge = {
 		_listener: [],

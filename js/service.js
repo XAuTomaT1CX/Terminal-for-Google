@@ -268,6 +268,8 @@ var serviceInfo = [{
 	id: 'webstore',
 	name: 'Chrome Web\xA0Store',
 	url: 'https://chrome.google.com/webstore'
+}, {
+	id: 'plus'
 }];
 
 var services;
@@ -277,6 +279,8 @@ function initialize(){
 			return new Gmail();
 		}else if(args.id === 'reader'){
 			return new GoogleReader();
+		}else if(args.id === 'plus'){
+			return new GooglePlus();
 		}else{
 			return new Service(args);
 		}
