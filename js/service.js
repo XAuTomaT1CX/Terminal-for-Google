@@ -264,6 +264,10 @@ var serviceInfo = [{
 	name: 'Google Books',
 	url: 'http://books.google.com',
 	icon: 'image/goog-books.png'
+}, {
+	id: 'webstore',
+	name: 'Chrome Web\xA0Store',
+	url: 'https://chrome.google.com/webstore'
 }];
 
 var services;
