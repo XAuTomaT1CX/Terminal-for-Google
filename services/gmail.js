@@ -73,7 +73,7 @@ function Gmail(){
 	});
 
 	// 設定が変更されたとき
-	pref.onPropertyChange.addListener(function(key, value){
+	pref.onChange.addListener(function(key, value){
 		if(!this.isEnabled)
 			return;
 
