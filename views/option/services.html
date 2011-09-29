@@ -90,6 +90,10 @@
 		.reader-enabled #reader-section { display: -webkit-box; }
 		.reader-enabled #reader-section + ul { display: block; }
 
+		#plus-section, #plus-section + ul { display: none; }
+		.plus-enabled #plus-section { display: -webkit-box; }
+		.plus-enabled #plus-section + ul { display: block; }
+
 		#urlshortener-section, #urlshortener-section + ul { display: none; }
 		.urlshortener-enabled #urlshortener-section { display: -webkit-box; }
 		.urlshortener-enabled #urlshortener-section + ul { display: block; }
@@ -128,6 +132,19 @@
 		<span class="msg">saved</span>
 	</ul>
 
+	<h1 id="plus-section">Google+</h1>
+	<ul>
+		<li><input type="checkbox" id="plus-poll-box">
+		<label for="plus-poll-box">check unread count</label>
+		<label for="plus-poll-interval-box">every</label>
+		<select id="plus-poll-interval-box">
+			<option value="300000">5min
+			<option value="600000">10min
+			<option value="1800000">30min
+		</select>
+		<span class="msg">saved</span>
+	</ul>
+
 	<h1 id="urlshortener-section">Google URL Shortener</h1>
 	<ul>
 		<li><input type="checkbox" id="shorten-button-box">
@@ -158,6 +175,17 @@
 		bind({
 			box: Q('#reader-poll-interval-box'),
 			prefKey: 'reader-poll-interval'
+		});
+
+		bindClass({prefKey: 'plus-enabled'});
+		bind({
+			box: Q('#plus-poll-box'),
+			valueKey: 'checked',
+			prefKey: 'plus-poll-enabled'
+		});
+		bind({
+			box: Q('#plus-poll-interval-box'),
+			prefKey: 'plus-poll-interval'
 		});
 
 		bindClass({prefKey: 'urlshortener-enabled'});
