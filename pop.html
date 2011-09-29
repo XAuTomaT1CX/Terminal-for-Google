@@ -137,6 +137,24 @@
 					readerBadge.textContent = badge.reader || '';
 				}
 			});
+
+			$id('plus-badge', function(b){
+				if(showIconOnly && parseInt(badge.plus) > 99){
+					b.textContent = '!';
+				}else{
+					b.textContent = badge.plus || '';
+				}
+
+				b.addEventListener('click', function(event){
+					event.preventDefault();
+					event.stopPropagation();
+					chrome.tabs.create({
+						url: (pref.get('secure')? 'https://': 'http://') +
+							'plus.google.com/notifications/all',
+						selected: true
+					});
+				});
+			});
 		}
 		
 		setBadge();
