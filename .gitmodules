@@ -1,0 +1,3 @@
+[submodule "scripts/iggyjs"]
+	path = scripts/iggyjs
+	url = git@github.com:Chick307/Iggy.js.git
