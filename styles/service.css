@@ -1,0 +1,133 @@
+
+.service-list {
+	margin: 0;
+	padding: 0;
+}
+
+[data-columns="3"].service-list { width: 420px }
+[data-columns="4"].service-list { width: 560px }
+[data-columns="5"].service-list { width: 700px }
+[data-columns="3"].icon-only.service-list { width: 120px }
+[data-columns="4"].icon-only.service-list { width: 160px }
+[data-columns="5"].icon-only.service-list { width: 200px }
+
+.service {
+	display: inline-block;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 1px;
+	border: none;
+	width: 140px;
+	height: 40px;
+	vertical-align: top;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.icon-only > .service {
+	width: 40px;
+}
+
+.service > button {
+	display: none;
+}
+
+.service > div {
+	position: relative;
+	display: box;
+	display: -webkit-box;
+	box-orient: horizontal;
+	-webkit-box-orient: horizontal;
+	box-align: center;
+	-webkit-box-align: center;
+	box-sizing: border-box;
+	z-index: 0;
+	border: 1px solid #BBB;
+	border-radius: 5px;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(top, #FFF, #DDD);
+	background: -webkit-linear-gradient(top, #FFF, #DDD);
+}
+
+.service:active > div {
+	background: linear-gradient(top, #DDD, #EEE);
+	background: -webkit-linear-gradient(top, #DDD, #EEE);
+}
+
+.service > div > img {
+	margin: 2px;
+	width: 32px;
+	height: 32px;
+}
+
+.service > div > span {
+	display: block;
+	box-flex: 1;
+	-webkit-box-flex: 1;
+	margin: 0;
+	padding: 0 1em;
+	font-family: sans-serif;
+	font-size: 12px;
+	line-height: 16px;
+	text-align: center;
+	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.icon-only > .service > div > span {
+	display: none;
+}
+
+.service > div > button {
+	position: absolute;
+	left: 16px;
+	bottom: -1px;
+	z-index: 1;
+	margin: 0;
+	padding: 0 0.5em;
+	border: 1px solid #000;
+	border-radius: 8px;
+	min-width: 16px;
+	height: 16px;
+	background-image: linear-gradient(top,
+		rgba(255, 255, 255, 0.4), rgba(0, 0, 0, 0.2));
+	background-image: -webkit-linear-gradient(top,
+		rgba(255, 255, 255, 0.4), rgba(0, 0, 0, 0.2));
+	opacity: 0.8;
+	color: #FFF;
+	font-size: 9px;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5);
+	line-height: 16px;
+	pointer: default;
+}
+
+.icon-only > .service > div > button {
+	left: auto;
+	right: 1px;
+	bottom: 1px;
+	padding: 0;
+	width: 22px;
+}
+
+.service > div > button:empty {
+	display: none;
+}
+
+[data-service-id=gmail].service > div > button {
+	background-color: red;
+}
+
+[data-service-id=reader].service > div > button {
+	background-color: blue;
+}
+
+[data-service-id=plus].service > div > button {
+	background-color: red;
+}
+
+[data-service-id=appengine].service > div > button,
+[data-service-id=urlshortener].service > div > button {
+	background-color: #468;
+}
+
