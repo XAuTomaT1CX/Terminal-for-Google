@@ -60,6 +60,8 @@
 	margin: 2px;
 	width: 32px;
 	height: 32px;
+	user-drag: none;
+	-webkit-user-drag: none;
 }
 
 .service > div > span {

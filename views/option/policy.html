@@ -3,48 +3,110 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="/styles/option.css">
-	<script src="/scripts/option.js"></script>
+	<script>
+		window.dataContext = top.dataContext;
+		window.onload = function(){
+			top.iggy.initialize(document, dataContext);
+		};
+	</script>
 </head>
 <body>
-	<h1>Security</h1>
-	<ul>
-		<li><input id="secure-box" type="checkbox" />
-		<label for="secure-box">use SSL (https://〜)</label>
-		<span class="msg">saved</span>
-	</ul>
-
-	<h1>Apperance</h1>
-	<ul>
-		<li><input id="icon-only-box" type="checkbox" />
-		<label for="icon-only-box">show icon only</label>
-		<span class="msg">saved</span>
-
-		<li><label for="columns-box">columns</label>
-		<select id="columns-box">
-			<option value="3">3</option>
-			<option value="4">4</option>
-			<option value="5">5</option>
-		</select>
-		<span class="msg">saved</span>
-	</ul>
-
+	<section>
+		<h1>Security</h1>
+		<ul>
+			<li>
+				<input id="secure-box" type="checkbox"
+					data-bind="checked: secure">
+				<label for="secure-box">use SSL (https://〜)</label>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
 	<script>
-		bind({
-			box: Q('#secure-box'),
-			valueKey: 'checked',
-			prefKey: 'secure'
-		});
+		(function(){
+			var msg = document.querySelector('#secure-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('secure-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
+	</script>
 
-		bind({
-			box: Q('#icon-only-box'),
-			valueKey: 'checked',
-			prefKey: 'icon-only'
-		});
+	<section>
+		<h1>Apperance</h1>
+		<ul>
+			<li>
+				<input id="icon-only-box" type="checkbox"
+					data-bind="checked: iconOnly">
+				<label for="icon-only-box">show icon only</label>
+				<span class="msg">saved</span>
+			</li>
+			<li>
+				<label for="columns-box">columns</label>
+				<select id="columns-box" data-bind="value: columns">
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
+	<script>
+		(function(){
+			var msg = document.querySelector('#icon-only-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('icon-only-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
 
-		bind({
-			box: Q('#columns-box'),
-			prefValue: 'columns'
-		});
+		(function(){
+			var msg = document.querySelector('#columns-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('columns-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
 	</script>
 </body>
 </html>
