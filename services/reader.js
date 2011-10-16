@@ -56,7 +56,7 @@ function GoogleReader(){
 	});
 
 	// 設定が変更されたとき
-	pref.onPropertyChange.addListener(function(key, value){
+	pref.onChange.addListener(function(key, value){
 		if(!this.isEnabled)
 			return;
 
@@ -122,12 +122,14 @@ Object.defineProperties(GoogleReader.prototype, {
 				try{
 					// JSONをパースして未読数を取得
 					var json = JSON.parse(xhr.responseText);
-					json.unreadcounts.some(function(link){
+					if(!json.unreadcounts.some(function(link){
 						if(link.id.indexOf('reading-list') >= 0){
 							this.unreadCount = String(link.count);
 							return true;
 						}
-					}, this);
+					}, this)){
+						this.unreadCount = 0;
+					}
 				}catch(error){
 					console.error(
 						'GoogleReader#checkUnreadCount() - ' + error);

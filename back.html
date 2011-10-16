@@ -7,40 +7,48 @@
 <script src="services/gmail.js"></script>
 <script src="services/reader.js"></script>
 <script src="services/plus.js"></script>
-<script src="js/pref.js"></script>
+<script src="scripts/event-dispatcher.js"></script>
+<script src="scripts/preference.js"></script>
 <script>
 	var pref = new Preference({prefix: 'pref-'});
-	pref.onPropertyChange.addListener(function(key, value){
-		var e = document.createEvent('Event');
-		e.initEvent('pref-changed', false, false);
-		e.key = key;
-		e.value = value;
+
+	pref.onChange.addListener(function(data){
+		var event = document.createEvent('Event');
+		event.initEvent('pref-changed', false, false);
+		event.key = data.key;
+		event.value = data.value;
+
 		chrome.extension.getViews().forEach(function(view){
-			view.dispatchEvent(e);
+			view.dispatchEvent(event);
 		});
 	});
 
-	pref.setDefault('secure', true);
-	pref.setDefault('icon-only', false);
-	pref.setDefault('columns', 3);
-	pref.setDefault('voice-enabled', false);
-	pref.setDefault('bookmarks-enabled', false);
-	pref.setDefault('gmail-poll-interval', 1000 * 60 * 5);
-	pref.setDefault('gmail-poll-enabled', true);
-	pref.setDefault('reader-poll-interval', 1000 * 60 * 5);
-	pref.setDefault('reader-poll-enabled', true);
-	pref.setDefault('urlshortener-enabled', false);
-	pref.setDefault('shorten-button-enabled', true);
-	pref.setDefault('music-enabled', false);
-	pref.setDefault('knol-enabled', false);
-	pref.setDefault('finance-enabled', false);
-	pref.setDefault('moderator-enabled', false);
-	pref.setDefault('books-enabled', false);
-	pref.setDefault('webstore-enabled', false);
-	pref.setDefault('plus-enabled', false);
-	pref.setDefault('plus-poll-enabled', true);
-	pref.setDefault('plus-poll-interval', 1000 * 60 * 5);
-	
+	// デフォルトの設定値
+	pref.update({
+		'secure': true,
+		'icon-only': false,
+		'secure': true,
+		'icon-only': false,
+		'columns': 3,
+		'voice-enabled': false,
+		'bookmarks-enabled': false,
+		'gmail-poll-interval': 1000 * 60 * 5,
+		'gmail-poll-enabled': true,
+		'reader-poll-interval': 1000 * 60 * 5,
+		'reader-poll-enabled': true,
+		'urlshortener-enabled': false,
+		'shorten-button-enabled': true,
+		'music-enabled': false,
+		'knol-enabled': false,
+		'finance-enabled': false,
+		'moderator-enabled': false,
+		'books-enabled': false,
+		'webstore-enabled': false,
+		'plus-enabled': false,
+		'plus-poll-enabled': true,
+		'plus-poll-interval': 1000 * 60 * 5
+	}, false);
+
 	var badge = {
 		_listener: [],
 		onPropertyChange: {

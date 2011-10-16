@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="/styles/service.css">
+	<style type="text/css">
+		body {
+			margin: 0;
+		}
+
+		body > div {
+			margin: 0.5em 0 0;
+			line-height: 1;
+			text-align: right;
+		}
+
+		a {
+			display: inline-block;
+			position: relative;
+			margin: 0 0.5em;
+			color: #444;
+			font-size: 10px;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		a:active {
+			top: 1px;
+		}
+	</style>
+	<script src="/scripts/iggyjs/iggy.js"></script>
+	<script src="popup.js"></script>
+</head>
+<body>
+	<ul class="service-list" data-template="service-template" data-bind="
+		class-icon-only: iconOnly;
+		items: services;
+		data-columns: columns"></ul>
+	<script type="text/html" id="service-template"><li class="service"
+		data-bind="data-service-id: id">
+		<button data-bind="command: open"></button>
+		<div>
+			<img data-bind="src: image">
+			<span data-bind="text: name"></span>
+			<button
+				data-bind="text: badgeText; command: badgeCommand"></button>
+		</div>
+	</li></script>
+	<script>
+		// リストのアイテムがクリックされたときクリックイベントを発火
+		document.querySelector('ul').addEventListener('click', function(event){
+			var target = event.target;
+			if(!target.webkitMatchesSelector('li.service, li.service *'))
+				return;
+
+			while(!target.classList.contains('service'))
+				target = target.parentElement;
+
+			var event = document.createEvent('Event');
+			event.initEvent('click', false, false);
+			target.firstElementChild.dispatchEvent(event);
+		});
+	</script>
+	<div>
+		<a href="#" data-bind="command: openAppsDashboard">Apps Dashboard</a>
+		<a href="#" data-bind="command: openOptionPage">Option Page</a>
+	</div>
+</body>
+</html>
+

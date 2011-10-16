@@ -3,6 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>Terminal for Google</title>
+	<script src="/scripts/iggyjs/iggy.js"></script>
+	<script src="option.js"></script>
 	<style>
 		html {
 			height: 100%;
@@ -136,39 +138,29 @@
 </head>
 <body>
 	<header class="policy">
-		<img src="/image/goog-logo-old.png" alt="" />
+		<img src="/image/goog-logo-old.png">
 		<span>Option</span>
 		<ul>
-			<li id="policy">Policy
-			<li id="services">Services
-			<li id="about">About
+			<li id="policy">Policy</li>
+			<li id="services">Services</li>
+			<li id="about">About</li>
 		</ul>
+		<script>
+			var header = document.querySelector('header');
+			var tabs = document.querySelector('ul');
+			tabs.addEventListener('click', function(event){
+				if(event.target.webkitMatchesSelector('li'))
+					header.className = event.target.id;
+			});
+		</script>
 	</header>
 
 	<section id="frames">
 		<iframe id="policy-frame" src="/views/option/policy.html"></iframe>
-		<iframe id="services-frame" src="/views/option/services.html">
-		</iframe>
+		<iframe id="services-frame"
+			src="/views/option/services.html"></iframe>
 		<iframe id="about-frame" src="/views/option/about.html"></iframe>
 	</section>
-
-	<script>
-		window.addEventListener('pref-changed', function(event){
-			Q('#policy-frame').contentWindow.dispatchEvent(event);
-			Q('#services-frame').contentWindow.dispatchEvent(event);
-			Q('#about-frame').contentWindow.dispatchEvent(event);
-		});
-
-		['policy', 'services', 'about'].forEach(function(id){
-			Q('#' + id).addEventListener('click', function(){
-				Q('header').className = id;
-			}, false);
-		});
-
-		function Q(selector){
-			return document.querySelector(selector);
-		}
-	</script>
 </body>
 </html>
 
