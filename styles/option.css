@@ -78,11 +78,11 @@ span.msg {
 	display: inline-block;
 	margin: 0 0.5em;
 	padding: 0 0.5em;
+	border: 1px solid #090;
 	border-radius: 3px;
-	background: linear-gradient(top, #0C0, #0A0);
-	background: -webkit-linear-gradient(top, #2C2, #2A2);
+	background: #0B0;
 	color: #FFF;
-	text-shadow: -1px -1px 0 #2A2;
+	text-shadow: -1px -1px 0 #090;
 	opacity: 0;
 	transition: opacity 0.1s;
 	-webkit-transition: opacity 0.1s;

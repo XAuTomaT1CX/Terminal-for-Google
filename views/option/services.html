@@ -3,12 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="/styles/option.css">
-	<script src="/scripts/option.js"></script>
+	<link rel="stylesheet" href="/styles/service.css">
+	<script>
+		window.dataContext = top.dataContext;
+		window.onload = function(){
+			top.iggy.initialize(document, dataContext);
+		};
+	</script>
 	<style>
 		.service-list {
 			margin: 16px auto;
 			border-radius: 5px;
-			width: 420px;
 			min-height: 40px;
 			background: #FFF;
 			transition: background 0.1s;
@@ -17,364 +22,305 @@
 
 		.dragging .service-list {
 			background: #CDF;
-			box-shadow: 0 0 0 1px #CDF;
-		}
-
-		.columns-4 > .service-list {
-			width: 560px;
-		}
-
-		.columns-5 > .service-list {
-			width: 700px;
+			box-shadow: 0 0 0 1px #BCE;
 		}
 
 		.service {
-			display: inline-box;
-			display: -webkit-inline-box;
-			box-align: center;
-			-webkit-box-align: center;
-			margin: 1px;
-			border-width: 1px;
-			border-style: solid;
-			border-color: #BBB;
-			border-radius: 5px;
-			width: 138px;
-			height: 38px;
-			background: linear-gradient(top, #FFF, #DDD);
-			background: -webkit-linear-gradient(top, #FFF, #DDD);
-			box-sizing: border-box;
 			user-drag: element;
-			vertical-align: top;
 			-webkit-user-drag: element;
 			cursor: move;
 		}
 
-		.service:-webkit-drag {
+		.service:-webkit-drag > div {
 			background: #FFF;
 			opacity: 0.7;
 		}
 
-		.columns-3 > .service-list > .service:nth-child(3n):last-child,
-		.columns-4 > .service-list > .service:nth-child(4n):last-child,
-		.columns-5 > .service-list > .service:nth-child(5n):last-child {
+		[data-columns=3].service-list > .service:nth-child(3n):last-child,
+		[data-columns=4].service-list > .service:nth-child(4n):last-child,
+		[data-columns=5].service-list > .service:nth-child(5n):last-child {
 			margin-bottom: 41px;
 		}
-
-		.service > img {
-			display: block;
-			margin: 2px;
-			width: 32px;
-			height: 32px;
-			user-drag: none;
-			-webkit-user-drag: none;
-		}
-
-		.service > span {
-			display: block;
-			box-flex: 1;
-			-webkit-box-flex: 1;
-			margin: 2px;
-			line-height: 16px;
-			text-align: center;
-			text-shadow: 1px 1px 0 #FFF;
-			font-family: sans-serif;
-			font-size: 12px;
-			color: #000;
-		}
-
-		#gmail-section, #gmail-section + ul { display: none; }
-		.gmail-enabled #gmail-section { display: -webkit-box; }
-		.gmail-enabled #gmail-section + ul { display: block; }
-
-		#reader-section, #reader-section + ul { display: none; }
-		.reader-enabled #reader-section { display: -webkit-box; }
-		.reader-enabled #reader-section + ul { display: block; }
-
-		#plus-section, #plus-section + ul { display: none; }
-		.plus-enabled #plus-section { display: -webkit-box; }
-		.plus-enabled #plus-section + ul { display: block; }
-
-		#urlshortener-section, #urlshortener-section + ul { display: none; }
-		.urlshortener-enabled #urlshortener-section { display: -webkit-box; }
-		.urlshortener-enabled #urlshortener-section + ul { display: block; }
 	</style>
 </head>
 <body>
-	<h1>Enabled Services</h1>
-	<ul id="enabled-services" class="service-list"></ul>
+	<section>
+		<h1>Enabled Services</h1>
+		<ul id="enabled-services" class="service-list"
+			data-template="service-template"
+			data-bind="data-columns: columns; items: enabledServices"></ul>
+	</section>
 
-	<h1>Disabled Services</h1>
-	<ul id="disabled-services" class="service-list"></ul>
+	<section>
+		<h1>Disabled Services</h1>
+		<ul id="disabled-services" class="service-list"
+			data-template="service-template"
+			data-bind="data-columns: columns; items: disabledServices"></ul>
+	</section>
 
-	<h1 id="gmail-section">Gmail</h1>
-	<ul>
-		<li><input type="checkbox" id="gmail-poll-box">
-		<label for="gmail-poll-box">check unread count</label>
-		<label for="gmail-poll-interval-box">every</label>
-		<select id="gmail-poll-interval-box">
-			<option value="300000">5min
-			<option value="600000">10min
-			<option value="1800000">30min
-		</select>
-		<span class="msg">saved</span>
-	</ul>
+	<script type="text/html" id="service-template"><li class="service"
+		data-bind="data-service-id: id">
+		<div>
+			<img data-bind="src: image">
+			<span data-bind="text: name"></span>
+		</div>
+	</li></script>
 
-	<h1 id="reader-section">Google Reader</h1>
-	<ul>
-		<li><input type="checkbox" id="reader-poll-box">
-		<label for="reader-poll-box">check unread count</label>
-		<label for="reader-poll-interval-box">every</label>
-		<select id="reader-poll-interval-box">
-			<option value="300000">5min
-			<option value="600000">10min
-			<option value="1800000">30min
-		</select>
-		<span class="msg">saved</span>
-	</ul>
+	<section data-bind="style-display: gmailDisplay">
+		<h1>Gmail</h1>
+		<ul>
+			<li>
+				<input type="checkbox" id="gmail-poll-box"
+					data-bind="checked: gmailPollEnabled">
+				<label for="gmail-poll-box">check unread count</label>
+				<label for="gmail-poll-interval-box">every</label>
+				<select id="gmail-poll-interval-box" data-bind="
+					value: gmailPollInterval;
+					enabled: gmailPollEnabled">
+					<option value="300000">5min
+					<option value="600000">10min
+					<option value="1800000">30min
+				</select>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
+	<script>
+		(function(){
+			var msg = document.querySelector('#gmail-poll-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('gmail-poll-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
+	</script>
 
-	<h1 id="plus-section">Google+</h1>
-	<ul>
-		<li><input type="checkbox" id="plus-poll-box">
-		<label for="plus-poll-box">check unread count</label>
-		<label for="plus-poll-interval-box">every</label>
-		<select id="plus-poll-interval-box">
-			<option value="300000">5min
-			<option value="600000">10min
-			<option value="1800000">30min
-		</select>
-		<span class="msg">saved</span>
-	</ul>
+	<section data-bind="style-display: readerDisplay">
+		<h1>Google Reader</h1>
+		<ul>
+			<li>
+				<input type="checkbox" id="reader-poll-box"
+					data-bind="checked: readerPollEnabled">
+				<label for="reader-poll-box">check unread count</label>
+				<label for="reader-poll-interval-box">every</label>
+				<select id="reader-poll-interval-box" data-bind="
+					value: readerPollInterval;
+					enabled: readerPollEnabled">
+					<option value="300000">5min
+					<option value="600000">10min
+					<option value="1800000">30min
+				</select>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
+	<script>
+		(function(){
+			var msg = document.querySelector('#reader-poll-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('reader-poll-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
+	</script>
 
-	<h1 id="urlshortener-section">Google URL Shortener</h1>
-	<ul>
-		<li><input type="checkbox" id="shorten-button-box">
-		<label for="shorten-button-box">enable "Shorten" button</label>
-		<span class="msg">saved</span>
-	</ul>
+	<section data-bind="style-display: plusDisplay">
+		<h1>Google+</h1>
+		<ul>
+			<li>
+				<input type="checkbox" id="plus-poll-box"
+					data-bind="checked: plusPollEnabled">
+				<label for="plus-poll-box">check unread count</label>
+				<label for="plus-poll-interval-box">every</label>
+				<select id="plus-poll-interval-box" data-bind="
+					value: plusPollInterval;
+					enabled: plusPollEnabled">
+					<option value="300000">5min
+					<option value="600000">10min
+					<option value="1800000">30min
+				</select>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
+	<script>
+		(function(){
+			var msg = document.querySelector('#plus-poll-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('plus-poll-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
+	</script>
+
+	<section data-bind="style-display: urlshortenerDisplay">
+		<h1>Google URL Shortener</h1>
+		<ul>
+			<li>
+				<input type="checkbox" id="shorten-button-box"
+					data-bind="checked: shortenButtonEnabled">
+				<label for="shorten-button-box">enable "Shorten" button</label>
+				<span class="msg">saved</span>
+			</li>
+		</ul>
+	</section>
+	<script>
+		(function(){
+			var msg = document.querySelector('#shorten-button-box ~ .msg');
+			var timeout = null;
+			window.top.addEventListener('shorten-button-saved', function handler(){
+				if(timeout){
+					clearTimeout(timeout);
+					msg.classList.remove('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						handler();
+					}, 100);
+				}else{
+					msg.classList.add('saved');
+					timeout = setTimeout(function(){
+						timeout = null;
+						msg.classList.remove('saved');
+					}, 1600);
+				}
+			});
+		}());
+	</script>
 
 	<script>
-		var services = backgroundPage.services;
+		var enabledServices = document.querySelector('#enabled-services');
+		var disabledServices = document.querySelector('#disabled-services');
 
-		bindClass({prefKey: 'gmail-enabled'});
-		bind({
-			box: Q('#gmail-poll-box'),
-			valueKey: 'checked',
-			prefKey: 'gmail-poll-enabled'
-		});
-		bind({
-			box: Q('#gmail-poll-interval-box'),
-			prefKey: 'gmail-poll-interval'
-		});
 
-		bindClass({prefKey: 'reader-enabled'});
-		bind({
-			box: Q('#reader-poll-box'),
-			valueKey: 'checked',
-			prefKey: 'reader-poll-enabled'
-		});
-		bind({
-			box: Q('#reader-poll-interval-box'),
-			prefKey: 'reader-poll-interval'
+		document.addEventListener('dragstart', function(event){
+			var target = event.target;
+			if(!target.classList.contains('service'))
+				return;
+			document.body.classList.add('dragging');
+			event.dataTransfer.setData('text', target.dataset.serviceId);
 		});
 
-		bindClass({prefKey: 'plus-enabled'});
-		bind({
-			box: Q('#plus-poll-box'),
-			valueKey: 'checked',
-			prefKey: 'plus-poll-enabled'
-		});
-		bind({
-			box: Q('#plus-poll-interval-box'),
-			prefKey: 'plus-poll-interval'
-		});
-
-		bindClass({prefKey: 'urlshortener-enabled'});
-		bind({
-			box: Q('#shorten-button-box'),
-			valueKey: 'checked',
-			prefKey: 'shorten-button-enabled'
-		});
-
-
-		document.body.classList.add('columns-' + pref.get('columns'));
-
-
-		var serviceOrder = services.reduce(function(serviceOrder, service){
-			if(serviceOrder.indexOf(service.id) === -1)
-				serviceOrder.push(service.id);
-			return serviceOrder;
-		}, pref.get('service-order', [])).reduce(function(serviceOrder, id){
-			if(!serviceOrder.some(function(serviceId){ return id === serviceId; }))
-				serviceOrder.push(id);
-			return serviceOrder;
-		}, []);
-
-		serviceOrder.forEach(function(serviceId){
-			var enabledServices = document.createDocumentFragment();
-			var disabledServices = document.createDocumentFragment();
-
-			services.forEach(function(service){
-				if(service.id !== serviceId)
-					return;
-
-				var icon = createIcon(service);
-
-				if(service.isEnabled){
-					enabledServices.appendChild(icon);
-				}else{
-					disabledServices.appendChild(icon);
-				}
-			});
-
-			Q('#enabled-services').appendChild(enabledServices);
-			Q('#disabled-services').appendChild(disabledServices);
-		});
-
-
-		Q('#enabled-services').addEventListener('dragenter', preventDefault, false);
-		Q('#enabled-services').addEventListener('dragover', preventDefault, false);
-		Q('#disabled-services').addEventListener('dragenter', preventDefault, false);
-		Q('#disabled-services').addEventListener('dragover', preventDefault, false);
-
-		Q('#enabled-services').addEventListener('drop', function(e){
-			onDrop.call(this, e, true);
-		}, false);
-
-		Q('#disabled-services').addEventListener('drop', function(e){
-			onDrop.call(this, e, false);
-		}, false);
-
-		function onDrop(e, enable){
-			preventDefault(e);
+		document.addEventListener('drop', function(event){
 			document.body.classList.remove('dragging');
-
-			var id = event.dataTransfer.getData('Text');
-			var aindex = serviceOrder.indexOf(id);
-			var service = getServiceById(id);
-			var target = e.target;
-
-			if(target === this){
-				serviceOrder.splice(aindex, 1);
-				serviceOrder.push(id);
-				if(enable)
-					service.enable();
-				else
-					service.disable();
-				onServiceOrderChanged();
-				return;
-			}
-
-			while(!target.classList.contains('service'))
-				target = target.parentNode;
-
-			if(id === target.id)
-				return;
-
-			var aindex = serviceOrder.indexOf(id);
-			var bindex = serviceOrder.indexOf(target.id);
-			var b = getServiceById(target.id);
-
-			if(service.isEnabled !== b.isEnabled){
-				if(b.isEnabled)
-					service.enable();
-				else
-					service.disable();
-
-				if(aindex < bindex){
-					serviceOrder.splice(bindex, 0, id);
-					serviceOrder.splice(aindex, 1);
-				}else{
-					serviceOrder.splice(aindex, 1);
-					serviceOrder.splice(bindex, 0, id);
-				}
-			}else if(aindex < bindex){
-				serviceOrder.splice(bindex + 1, 0, id);
-				serviceOrder.splice(aindex, 1);
-			}else{
-				serviceOrder.splice(aindex, 1);
-				serviceOrder.splice(bindex, 0, id);
-			}
-
-			onServiceOrderChanged();
-		}
-
-		function onServiceOrderChanged(o){
-			if(!o)
-				pref.set('service-order', serviceOrder);
-
-			var enabledServices = document.createDocumentFragment();
-			var disabledServices = document.createDocumentFragment();
-
-			serviceOrder.forEach(function(id){
-				var service = getServiceById(id);
-				if(service == null)
-					return;
-
-				if(service.isEnabled)
-					enabledServices.appendChild(Q('#' + id));
-				else
-					disabledServices.appendChild(Q('#' + id));
-			});
-
-			Q('#enabled-services').appendChild(enabledServices);
-			Q('#disabled-services').appendChild(disabledServices);
-		}
-
-
-		window.addEventListener('pref-changed', function(e){
-			var key = e.key, value = e.value;
-
-			if(key === 'columns'){
-				document.body.classList.remove('columns-3');
-				document.body.classList.remove('columns-4');
-				document.body.classList.remove('columns-5');
-				document.body.classList.add('columns-' + value);
-			}else if(key === 'service-order'){
-				serviceOrder = value;
-				onServiceOrderChanged(true);
-			}
 		});
 
 
-		function getServiceById(id){
-			var service = null;
-			services.some(function(s){
-				if(s.id === id){
-					service = s;
-					return true;
-				}
+		enabledServices.addEventListener('dragenter', function(event){
+			event.preventDefault();
+		});
 
-				return false;
+		enabledServices.addEventListener('dragover', function(event){
+			event.preventDefault();
+		});
+
+		enabledServices.addEventListener('drop', function(event){
+			event.preventDefault();
+
+			var serviceId = event.dataTransfer.getData('text');
+			var target = event.target;
+			reorder(serviceId, target,
+				dataContext.disabledServices, dataContext.enabledServices);
+		});
+
+
+		disabledServices.addEventListener('dragenter', function(event){
+			event.preventDefault();
+		});
+
+		disabledServices.addEventListener('dragover', function(event){
+			event.preventDefault();
+		});
+
+		disabledServices.addEventListener('drop', function(event){
+			event.preventDefault();
+
+			var serviceId = event.dataTransfer.getData('text');
+			var target = event.target;
+			reorder(serviceId, target,
+				dataContext.enabledServices, dataContext.disabledServices);
+		});
+
+
+		function reorder(serviceId, target, droppedList, theOtherList){
+			var list1 = droppedList;
+			var list2 = theOtherList;
+
+			var index = list1.find(function(service){
+				return service.id === serviceId;
 			});
 
-			return service;
-		}
+			if(index === -1){
+				index = list2.find(function(service){
+					return service.id === serviceId;
+				});
 
+				if(index === -1)
+					return;
 
-		function createIcon(service){
-			var icon = document.createElement('li');
-			icon.id = service.id;
-			icon.classList.add('service');
+				list1 = list2;
+			}else{
+				item = list1.get(index);
+			}
 
-			var image = document.createElement('img');
-			image.src = '/' + service.icon;
-			icon.appendChild(image);
+			var item = list1.get(index);
 
-			var name = document.createElement('span');
-			name.textContent = service.name;
-			icon.appendChild(name);
+			if(target.webkitMatchesSelector('li, li *')){
+				while(!target.classList.contains('service'))
+					target = target.parentElement;
 
-			icon.addEventListener('dragstart', function(e){
-				e.dataTransfer.setData('Text', service.id);
-				document.body.classList.add('dragging');
-			}, false);
+				var targetId = target.dataset.serviceId;
+				var targetIndex = list2.find(function(service){
+					return service.id === targetId;
+				});
 
-			return icon;
-		}
+				if(targetIndex === -1)
+					targetIndex = index;
 
-
-		function preventDefault(e){
-			e.preventDefault();
+				list1.removeAt(index);
+				list2.insert(targetIndex, item);
+			}else{
+				list1.removeAt(index);
+				list2.append(item);
+			}
 		}
 	</script>
 </body>

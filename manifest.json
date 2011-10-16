@@ -1,6 +1,6 @@
 {
 	"name": "Terminal for Google",
-	"version": "1.6.15",
+	"version": "1.6.16",
 	"description": "Quick access to Google!",
 	
 	"icons": {
@@ -29,6 +29,6 @@
 	"browser_action": {
 		"default_title": "Terminal for Google",
 		"default_icon": "image/goog-logo-old.png",
-		"popup": "pop.html"
+		"popup": "views/popup.html"
 	}
 }
