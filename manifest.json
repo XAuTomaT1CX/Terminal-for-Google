@@ -1,6 +1,6 @@
 {
 	"name": "Terminal for Google",
-	"version": "1.6.16",
+	"version": "1.6.17",
 	"description": "Quick access to Google!",
 	
 	"icons": {
@@ -8,16 +8,14 @@
 	},
 	
 	"permissions": [
-		"unlimitedStorage",
 		"contextMenus",
 		"tabs",
-		"http://*/",
-		"https://*/"
+		"*://*/*"
 	],
 	
 	"content_scripts": [
 		{
-			"matches": ["http://*/*", "https://*/*"],
+			"matches": ["*://*/*"],
 			"css": [],
 			"js": ["js/content.js"]
 		}
