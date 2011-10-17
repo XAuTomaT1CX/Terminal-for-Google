@@ -11,7 +11,7 @@ window.dataContext = new iggy.ViewModel({
 				if(result.indexOf(service.id) === -1)
 					result.push(service.id);
 				return result;
-			}, pref.get('service-order'));
+			}, pref.get('service-order', []));
 		}())
 	},
 	_services: {
