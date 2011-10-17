@@ -27,5 +27,8 @@ files = (Query(gitLsFiles.stdout)
 	.where(lambda fn: fn[0] != '.')
 	.where(lambda fn: fn != 'SConstruct'))
 
-Command('a.zip', files.tolist(), 'zip $TARGET $SOURCES')
+files = files.tolist();
+files.append('scripts/iggyjs/iggy.js');
+
+Command('a.zip', files, 'zip $TARGET $SOURCES')
 
