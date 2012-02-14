@@ -149,15 +149,15 @@ var serviceInfo = [{
 	url: 'www.blogger.com/home',
 	icon: 'image/goog-blogger.png',
 	menus: [{
-		title: 'Blog This Page',
+		title: 'Blog this page',
 		context: 'page',
 		action: 'blogger'
 	}, {
-		title: 'Blog This Link',
+		title: 'Blog this link',
 		context: 'link',
 		action: 'blogger'
 	}, {
-		title: 'Blog This Text',
+		title: 'Blog this text',
 		context: 'selection',
 		action: 'blogger'
 	}]
@@ -270,6 +270,11 @@ var serviceInfo = [{
 	url: 'https://chrome.google.com/webstore'
 }, {
 	id: 'plus'
+}, {
+	id: 'panoramio',
+	name: 'Panoramio',
+	url: 'http://www.panoramio.com',
+	icon: 'image/goog-panoramio-old.png'
 }];
 
 var services;
