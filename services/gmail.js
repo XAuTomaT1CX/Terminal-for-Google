@@ -7,17 +7,17 @@ function Gmail(){
 		icon: 'image/goog-mail.png',
 		menus: [
 			{
-				title: 'Mail This Page',
+				title: 'Mail this page',
 				context: 'page',
 				action: 'gmail'
 			},
 			{
-				title: 'Mail This Link',
+				title: 'Mail this link',
 				context: 'link',
 				action: 'gmail'
 			},
 			{
-				title: 'Mail This Text',
+				title: 'Mail this text',
 				context: 'selection',
 				action: 'gmail'
 			}

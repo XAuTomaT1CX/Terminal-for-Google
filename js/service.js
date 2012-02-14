@@ -149,15 +149,15 @@ var serviceInfo = [{
 	url: 'www.blogger.com/home',
 	icon: 'image/goog-blogger.png',
 	menus: [{
-		title: 'Blog This Page',
+		title: 'Blog this page',
 		context: 'page',
 		action: 'blogger'
 	}, {
-		title: 'Blog This Link',
+		title: 'Blog this link',
 		context: 'link',
 		action: 'blogger'
 	}, {
-		title: 'Blog This Text',
+		title: 'Blog this text',
 		context: 'selection',
 		action: 'blogger'
 	}]
